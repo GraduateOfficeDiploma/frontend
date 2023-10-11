@@ -18,6 +18,7 @@ export default function Courses() {
                 <CourseCard />
                 <CourseCard />
                 <AddCourse />
+                <CreateCourse />
             </Grid>
         </Box>
     );

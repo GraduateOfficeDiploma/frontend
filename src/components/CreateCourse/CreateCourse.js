@@ -12,13 +12,34 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
+import axios from "axios";
+import {redirect} from "next/navigation";
 
 export default function CreateCourse() {
     const [open, setOpen] = React.useState(false);
     const [courseName, setCourseName] = React.useState('');
     const [date, setDate] = React.useState(dayjs('2023-01-01'));
+    const [image, setImage] = React.useState(null);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    const handleCreateCourse = () => {
+        console.log('kuku', courseName, date.toString(), image);
+
+        axios.post('http://localhost:8010/api/courses', {
+            name: courseName,
+            schedule: [date.toString()],
+            image: image
+        })
+        .then(function (response) {
+            console.log('kuku', response)
+        })
+        .catch(function (error) {
+            console.log('kuku response', error);
+        });
+
+        handleClose();
+    }
 
     const darkGrey = '#373737';
 
@@ -74,7 +95,7 @@ export default function CreateCourse() {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
                 sx={{
-                    zIndex: 9999
+                    zIndex: 1200
                 }}
             >
                 <Box
@@ -129,6 +150,13 @@ export default function CreateCourse() {
                                 }
                             }}
                         >
+                            <input
+                                type="file"
+                                name="image"
+                                onChange={(event) => {
+                                    setImage(event.target.files[0]);
+                                }}
+                            />
                             + Choose a cover
                         </Button>
                     </Box>
@@ -166,7 +194,7 @@ export default function CreateCourse() {
                         variant="contained"
                         size="large"
                         fullWidth
-                        onClick={handleClose}
+                        onClick={handleCreateCourse}
                         sx={{
                             color: 'white',
                             background: grey[900],

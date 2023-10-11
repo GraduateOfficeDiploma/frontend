@@ -4,6 +4,8 @@ import Typography from '@mui/material/Typography';
 import {TextField, Box, Link, FormControl, InputLabel, Select, MenuItem} from "@mui/material";
 import { grey } from '@mui/material/colors';
 import Button from "@mui/material/Button";
+import axios from "axios";
+import { useRouter } from "next/router";
 
 
 export default function Signup({ user }) {
@@ -11,12 +13,39 @@ export default function Signup({ user }) {
     const [password, setPassword] = React.useState('');
     const [name, setName] = React.useState('');
     const [role, setRole] = React.useState('');
+    const router = useRouter();
 
     const handleChange = (event) => {
         setRole(event.target.value);
     };
 
-    const handleSignUp = () => {};
+    const handleSignUp = () => {
+        axios.post('http://localhost:8010/api/users', {
+            role: 'guest',
+            fullName: name,
+            email: email,
+            password: password
+        })
+        .then(function (response) {
+            if(response.status === 201) {
+                axios.post('http://localhost:8010/api/auth/login', {
+                    email: email,
+                    password: password
+                })
+                .then(function (response) {
+                    if(response.status === 201) {
+                        router.push('/courses');
+                    }
+                })
+                .catch(function (error) {
+
+                });
+            }
+        })
+        .catch(function (error) {
+
+        });
+    };
 
     return (
         <Box
