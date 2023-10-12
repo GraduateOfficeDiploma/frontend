@@ -4,26 +4,29 @@ import Typography from '@mui/material/Typography';
 import {TextField, Box, Link} from "@mui/material";
 import { grey } from '@mui/material/colors';
 import Button from "@mui/material/Button";
-import axios from "axios";
 import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
 
 export default function Login() {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const router = useRouter();
-    const handleLogin = () => {
-        axios.post('http://localhost:8010/api/auth/login', {
-            email: email,
-            password: password
-        })
-        .then(function (response) {
-            if(response.status === 201) {
-                router.push('/courses');
-            }
-        })
-        .catch(function (error) {
 
-        });
+    const handleLogin = async () => {
+        const res = await signIn(
+            "credentials",
+            {
+                redirect: false,
+                email: email,
+                password: password,
+                callbackUrl: `${window.location.origin}/courses`,
+                type: 'login',
+            }
+        );
+
+        if (res.url) {
+            router.push(res.url);
+        }
     };
 
     return (

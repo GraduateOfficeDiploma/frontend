@@ -1,79 +1,68 @@
-import NextAuth from "next-auth"
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from 'axios';
 
-export const authOptions = {
-    // Configure one or more authentication providers
+export default NextAuth({
     providers: [
         CredentialsProvider({
-            id: "login",
-            credentials: {
-                email: {label: 'Email', type: 'text'},
-                password: {label: 'Password', type: 'password'},
-            },
-            async authorize(credentials) {
-                console.log('kuku send request login');
+            name: "",
+            credentials: {},
 
-                axios.post('http://localhost:8010/login', {
-                    credentials
+            async authorize(credentials) {
+                const config = {
+                    url: '',
+                    payload: {}
+                };
+
+                switch (credentials.type) {
+                    case 'login':
+                        config.url = `http://localhost:8010/api/auth/login`;
+                        config.payload.email = credentials.email;
+                        config.payload.password = credentials.password;
+                        break;
+                    case 'signup':
+                        config.url = `http://localhost:8010/api/users`;
+                        config.payload.email = credentials.email;
+                        config.payload.password = credentials.password;
+                        config.payload.fullName = credentials.fullName;
+
+                        break;
+                    default:
+                        break;
+                }
+
+                return axios.post(config.url, config.payload)
+                .then(function (response) {
+                    if(response && response.status === 201) {
+                        return {
+                            ...response.data.user,
+                            accessToken: response.data.accessToken
+                        };
+                    }
+
+                    return null;
                 })
-                    .then(function (response) {
-                        console.log(response);
-
-                        return response;
-                    })
-                    .catch(function (error) {
-                        return null;
-                    });
-            },
-        }),
-        CredentialsProvider({
-            id: "signup",
-            credentials: {
-                fullName: {label: 'FullName', type: 'text'},
-                email: {label: 'Email', type: 'text'},
-                password: {label: 'Password', type: 'password'},
-            },
-            async authorize(credentials) {
-                console.log('kuku send request signup');
-
-                axios.post('http://localhost:8010/users',
-                    credentials
-                )
-                    .then(function (response) {
-                        console.log(response);
-
-                        if(response) {
-
-                        }
-                    })
-                    .catch(function (error) {
-                        return null;
-                    });
+                .catch(function (error) {
+                    return null;
+                });
             },
         }),
     ],
+    secret: 'mySecret',
     callbacks: {
-        async signIn({ user }) {
-            console.log('kuku', user)
+        async jwt({ token, user, account }) {
+            console.log('kuku jwt', token, user, account);
 
-            if (user) return true;
+            return token;
+        },
 
-            return false;
-        },
-        jwt: async ({token, user}) => {
-            if (user) {
-                token.data = user.id
-            }
-            return token
-        },
-        session: async ({session, token}) => {
-            if (token.data) {
-                session.user = token.data
-            }
-            return session
+        async session({ session, token }) {
+            console.log('kuku', session, token);
+
+            session.user.accessToken = token.accessToken;
+            session.user.fullName = token.fullName;
+
+            return session;
         },
     },
-}
-
-export default NextAuth(authOptions)
+})

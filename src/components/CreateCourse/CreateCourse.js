@@ -7,13 +7,11 @@ import AddIcon from "@mui/icons-material/Add";
 import Button from "@mui/material/Button";
 import {Modal, TextField} from "@mui/material";
 import Box from "@mui/material/Box";
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import axios from "axios";
-import {redirect} from "next/navigation";
 
 export default function CreateCourse() {
     const [open, setOpen] = React.useState(false);
@@ -176,18 +174,16 @@ export default function CreateCourse() {
                     />
 
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DemoContainer components={['DatePicker', 'DatePicker']}>
-                            <DatePicker
-                                label="Schedule"
-                                value={date}
-                                sx={{
-                                    "&.MuiTextField-root": {
-                                        width: '100%',
-                                    }
-                                }}
-                                onChange={(newValue) => setDate(newValue)}
-                            />
-                        </DemoContainer>
+                        <DatePicker
+                            label="Schedule"
+                            value={date}
+                            sx={{
+                                "&.MuiTextField-root": {
+                                    width: '100%',
+                                }
+                            }}
+                            onChange={(newValue) => setDate(newValue)}
+                        />
                     </LocalizationProvider>
 
                     <Button

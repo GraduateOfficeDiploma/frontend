@@ -19,6 +19,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import ThemeRegistry from "../ThemeRegistry/ThemeRegistry";
 import TaskIcon from '@mui/icons-material/Task';
 import SchoolIcon from '@mui/icons-material/School';
+import {signOut, useSession} from "next-auth/react"
 
 const LINKS = [
     {text: 'My courses', href: '/courses', icon: SchoolIcon},
@@ -33,8 +34,11 @@ const PLACEHOLDER_LINKS = [
 
 export default function RootLayout({children}) {
     const [isSignedIn, setIsSignedIn] = React.useState(true);
+    const session = useSession();
 
-    const DRAWER_WIDTH = isSignedIn ? 240 : 0;
+    console.log('kuku', session)
+
+    const DRAWER_WIDTH = session?.data?.user ? 240 : 0;
 
     return (
         <ThemeRegistry>
@@ -47,15 +51,21 @@ export default function RootLayout({children}) {
                     <Typography variant="h6" noWrap component="div" color="black">
                         Graduate Students Office
                     </Typography>
-                    <ListItemButton sx={{display: 'flex', flex: 'inherit'}}>
-                        <ListItemText sx={{color: 'black', marginRight: '10px'}} primary="Username"/>
-                        <ListItemIcon sx={{minWidth: 0}}>
-                            <LogoutIcon/>
-                        </ListItemIcon>
-                    </ListItemButton>
+
+                    { session?.data?.user &&
+                        <ListItemButton onClick={() => signOut()} sx={{display: 'flex', flex: 'inherit'}}>
+                            <ListItemText
+                                sx={{color: 'black', marginRight: '10px'}}
+                                primary={session?.data?.user?.fullName}
+                            />
+                            <ListItemIcon sx={{minWidth: 0}}>
+                                <LogoutIcon/>
+                            </ListItemIcon>
+                        </ListItemButton>
+                    }
                 </Toolbar>
             </AppBar>
-            { isSignedIn &&
+            { session?.data?.user &&
                 <Drawer
                     sx={{
                         width: DRAWER_WIDTH,

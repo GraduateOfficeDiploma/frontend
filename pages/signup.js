@@ -6,6 +6,7 @@ import { grey } from '@mui/material/colors';
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
 
 
 export default function Signup({ user }) {
@@ -26,20 +27,22 @@ export default function Signup({ user }) {
             email: email,
             password: password
         })
-        .then(function (response) {
+        .then(async function (response) {
             if(response.status === 201) {
-                axios.post('http://localhost:8010/api/auth/login', {
-                    email: email,
-                    password: password
-                })
-                .then(function (response) {
-                    if(response.status === 201) {
-                        router.push('/courses');
+                const res = await signIn(
+                    "credentials",
+                    {
+                        redirect: false,
+                        email: email,
+                        password: password,
+                        callbackUrl: `${window.location.origin}/courses`,
+                        type: 'login',
                     }
-                })
-                .catch(function (error) {
+                );
 
-                });
+                if (res.url) {
+                    router.push(res.url);
+                }
             }
         })
         .catch(function (error) {
