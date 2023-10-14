@@ -6,13 +6,28 @@ import { grey } from '@mui/material/colors';
 import Button from "@mui/material/Button";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
+import {validate} from "react-email-validator";
+
+export async function getServerSideProps() {
+    console.log('kuku', `${process.env.BACKEND_URL}/api/courses`);
+
+    return {
+        props: {
+
+        }
+    };
+}
 
 export default function Login() {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [loginError, setLoginError] = React.useState(false);
+    const [emailError, setEmailError] = React.useState(false);
     const router = useRouter();
 
     const handleLogin = async () => {
+        setLoginError(false);
+
         const res = await signIn(
             "credentials",
             {
@@ -24,10 +39,22 @@ export default function Login() {
             }
         );
 
+        if(res.error) {
+            setLoginError(true);
+        }
+
         if (res.url) {
             router.push(res.url);
         }
     };
+
+    const handleEmailError = () => {
+        if(!validate(email)) {
+            setEmailError(true);
+        } else {
+            setEmailError(false);
+        }
+    }
 
     return (
         <Box
@@ -63,8 +90,11 @@ export default function Login() {
                         label="Email Address"
                         type="email"
                         fullWidth
+                        error={emailError}
+                        onBlur={handleEmailError}
+                        helperText={emailError && "Incorrect email"}
                         sx={{
-                            margin: '24px 0 0'
+                            margin: '24px 0 0',
                         }}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -81,6 +111,19 @@ export default function Login() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
+                    { loginError &&
+                        <Typography
+                            sx={{
+                                textAlign: 'center',
+                                margin: '16px 0 0',
+                                color: 'red'
+                            }}
+                            variant="body1"
+                        >
+                            Login or password are incorrect
+                        </Typography>
+                    }
+
                     <Button
                         variant="contained"
                         size="large"

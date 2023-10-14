@@ -16,12 +16,12 @@ export default NextAuth({
 
                 switch (credentials.type) {
                     case 'login':
-                        config.url = `http://localhost:8010/api/auth/login`;
+                        config.url = `${process.env.BACKEND_URL}/api/auth/login`;
                         config.payload.email = credentials.email;
                         config.payload.password = credentials.password;
                         break;
                     case 'signup':
-                        config.url = `http://localhost:8010/api/users`;
+                        config.url = `${process.env.BACKEND_URL}/api/users`;
                         config.payload.email = credentials.email;
                         config.payload.password = credentials.password;
                         config.payload.fullName = credentials.fullName;
@@ -36,7 +36,8 @@ export default NextAuth({
                     if(response && response.status === 201) {
                         return {
                             ...response.data.user,
-                            accessToken: response.data.accessToken
+                            accessToken: response.data.accessToken,
+                            name: response.data.user.fullName
                         };
                     }
 
@@ -51,14 +52,13 @@ export default NextAuth({
     secret: 'mySecret',
     callbacks: {
         async jwt({ token, user, account }) {
-            console.log('kuku jwt', token, user, account);
-
-            return token;
+            return {
+                ...token,
+                ...user
+            };
         },
 
         async session({ session, token }) {
-            console.log('kuku', session, token);
-
             session.user.accessToken = token.accessToken;
             session.user.fullName = token.fullName;
 

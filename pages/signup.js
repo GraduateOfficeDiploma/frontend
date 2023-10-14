@@ -7,12 +7,16 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
+import {validate} from "react-email-validator";
 
 
 export default function Signup({ user }) {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [name, setName] = React.useState('');
+    const [emailError, setEmailError] = React.useState(false);
+    const [passwordError, setPasswordError] = React.useState(false);
+    const [signupError, setSignupError] = React.useState(false);
     const [role, setRole] = React.useState('');
     const router = useRouter();
 
@@ -20,8 +24,32 @@ export default function Signup({ user }) {
         setRole(event.target.value);
     };
 
+    const handleEmailError = () => {
+        if(!validate(email)) {
+            setEmailError(true);
+        } else {
+            setEmailError(false);
+        }
+    }
+
+    const handlePasswordError = () => {
+        if(password.length < 8) {
+            setPasswordError(true);
+        } else {
+            setPasswordError(false);
+        }
+    }
+
     const handleSignUp = () => {
-        axios.post('http://localhost:8010/api/users', {
+        if(emailError || passwordError) {
+            setSignupError(true);
+
+            return;
+        }
+
+        setSignupError(false);
+
+        axios.post(`${process.env.BACKEND_URL}/api/users`, {
             role: 'guest',
             fullName: name,
             email: email,
@@ -43,10 +71,12 @@ export default function Signup({ user }) {
                 if (res.url) {
                     router.push(res.url);
                 }
+            } else {
+                setSignupError(false);
             }
         })
         .catch(function (error) {
-
+            setSignupError(false);
         });
     };
 
@@ -78,19 +108,19 @@ export default function Signup({ user }) {
                         flexDirection: 'column'
                     }}
                 >
-                    <FormControl fullWidth variant="filled" sx={{ margin: '24px 0 0' }}>
-                        <InputLabel id="demo-simple-select-standard-label">Person</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-standard-label"
-                            id="demo-simple-select-standard"
-                            value={role}
-                            onChange={handleChange}
-                            label="Person"
-                        >
-                            <MenuItem value="student">Student</MenuItem>
-                            <MenuItem value="teacher">Teacher</MenuItem>
-                        </Select>
-                    </FormControl>
+                    {/*<FormControl fullWidth variant="filled" sx={{ margin: '24px 0 0' }}>*/}
+                    {/*    <InputLabel id="demo-simple-select-standard-label">Person</InputLabel>*/}
+                    {/*    <Select*/}
+                    {/*        labelId="demo-simple-select-standard-label"*/}
+                    {/*        id="demo-simple-select-standard"*/}
+                    {/*        value={role}*/}
+                    {/*        onChange={handleChange}*/}
+                    {/*        label="Person"*/}
+                    {/*    >*/}
+                    {/*        <MenuItem value="student">Student</MenuItem>*/}
+                    {/*        <MenuItem value="teacher">Teacher</MenuItem>*/}
+                    {/*    </Select>*/}
+                    {/*</FormControl>*/}
                     <TextField
                         variant="filled"
                         margin="normal"
@@ -109,8 +139,11 @@ export default function Signup({ user }) {
                         label="Email Address"
                         type="email"
                         fullWidth
+                        error={emailError}
+                        onBlur={handleEmailError}
+                        helperText={emailError && "Incorrect email"}
                         sx={{
-                            margin: '24px 0 0'
+                            margin: '24px 0 0',
                         }}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -121,12 +154,29 @@ export default function Signup({ user }) {
                         label="Password"
                         type="password"
                         fullWidth
+                        error={passwordError}
+                        onBlur={handlePasswordError}
+                        helperText={passwordError && "Password should be at least 8 characters long"}
                         sx={{
                             margin: '24px 0 0'
                         }}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
+
+                    { signupError &&
+                        <Typography
+                            sx={{
+                                textAlign: 'center',
+                                margin: '16px 0 0',
+                                color: 'red'
+                            }}
+                            variant="body1"
+                        >
+                            Some credentials are incorrect
+                        </Typography>
+                    }
+
                     <Button
                         variant="contained"
                         size="large"

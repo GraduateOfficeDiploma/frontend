@@ -6,7 +6,7 @@ export async function middleware(req) {
     const session = await getToken({ req,
         secret: 'mySecret' });
 
-    if (!session) return NextResponse.redirect(`http://localhost:3000/login`);
+    if (!session) return NextResponse.redirect(`${process.env.BASE_URL}/login`);
 
     return NextResponse.next();
 }

@@ -3,20 +3,24 @@ import * as React from 'react';
 import {grey} from '@mui/material/colors';
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import {FormControl, InputLabel, Menu, MenuItem, Modal, Select, TextField} from "@mui/material";
+import {FormControl, IconButton, InputLabel, Menu, MenuItem, Modal, Select, TextField} from "@mui/material";
 import Box from "@mui/material/Box";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import Grid from "@mui/material/Grid";
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function CreatAssignment() {
-    const [open, setOpen] = React.useState(false);
+    const [openModal, setOpenModal] = React.useState('');
+    const [openTopicModal, setOpenTopicModal] = React.useState(false);
     const [assignmentTitle, setAssignmentTitle] = React.useState('');
+    const [topic, setTopic] = React.useState('');
     const [assignmentDescription, setAssignmentDescription] = React.useState('');
     const [date, setDate] = React.useState(dayjs('2023-01-01'));
-    const [permission, setPermission] = React.useState('all')
+    // const [permission, setPermission] = React.useState('all')
+    const [files, setFiles] = React.useState([]);
     const [grade, setGrade] = React.useState('')
     const [anchorEl, setAnchorEl] = React.useState(null);
     const openMenu = Boolean(anchorEl);
@@ -25,23 +29,37 @@ export default function CreatAssignment() {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleCloseMenu = () => {
-        handleOpen();
+    const handleCloseMenu = (modal) => {
+        if(modal) {
+            handleOpenModal(modal);
+        }
 
         setAnchorEl(null);
     };
 
-    const handleOpen = () => setOpen(true);
+    const handleOpenModal = (modal) => setOpenModal(modal);
 
-    const handleClose = () => setOpen(false);
+    const handleCloseModal = () => setOpenModal('');
 
-    const handleChangePermission = (event) => {
-        setPermission(event.target.value);
-    };
+    // const handleChangePermission = (event) => {
+    //     setPermission(event.target.value);
+    // };
 
     const handleChangeGrade = (event) => {
         setGrade(event.target.value);
     };
+
+    const handleAddFiles = (file) => {
+        console.log('kuku', !files.find(item => item.name === file.name));
+
+        if(!files.find(item => item.name === file.name)) {
+            setFiles([...files, file]);
+        }
+    }
+
+    const handleRemoveFile = (name) => {
+        setFiles(prev => prev.filter((prevFile) => prevFile.name !== name));
+    }
 
     const darkGrey = '#373737';
     const textColor = "#6E6E6E";
@@ -79,15 +97,15 @@ export default function CreatAssignment() {
                     'aria-labelledby': 'basic-button',
                 }}
             >
-                <MenuItem onClick={handleCloseMenu}>Assignment</MenuItem>
-                <MenuItem onClick={handleCloseMenu}>Quiz assignment</MenuItem>
-                <MenuItem onClick={handleCloseMenu}>Material</MenuItem>
-                <MenuItem onClick={handleCloseMenu}>Topic</MenuItem>
+                <MenuItem onClick={() => handleCloseMenu('assignment')}>Assignment</MenuItem>
+                {/*<MenuItem onClick={() => handleCloseMenu('2')}>Quiz assignment</MenuItem>*/}
+                {/*<MenuItem onClick={() => handleCloseMenu('3')}>Material</MenuItem>*/}
+                <MenuItem onClick={() => handleCloseMenu('topic')}>Topic</MenuItem>
             </Menu>
 
             <Modal
-                open={open}
-                onClose={handleClose}
+                open={openModal === 'assignment'}
+                onClose={handleCloseModal}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
@@ -134,86 +152,159 @@ export default function CreatAssignment() {
                         onChange={(e) => setAssignmentDescription(e.target.value)}
                     />
 
-                    <Box
-                        p={2}
-                        sx={{
-                            marginTop: 3,
-                            border: `1px solid ${grey[200]}`,
-                            borderRadius: '4px',
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                gap: 2
-                            }}
-                        >
-                            <Box>
-                                <Typography
-                                    sx={{
-                                        color: darkGrey,
-                                        fontWeight: 500,
-                                        lineHeight: '20px'
-                                    }}
-                                    variant="body1"
-                                >
-                                    1.png
-                                </Typography>
-                                <Typography sx={{ color: textColor, lineHeight: '20px' }}variant="body1">Image</Typography>
-                            </Box>
-                            <Button>Remove</Button>
-                        </Box>
-
-                        <FormControl variant="filled" sx={{ marginTop: 2, maxWidth: '250px', width: '100%' }}>
-                            <InputLabel id="select-permission-label">Permission</InputLabel>
-                            <Select
-                                labelId="select-permission-label"
-                                id="select-permission"
-                                value={permission}
-                                onChange={handleChangePermission}
-                                label="Permision"
+                    { files.map(file => {
+                        return (
+                            <Box
+                                p={2}
+                                sx={{
+                                    marginTop: 3,
+                                    border: `1px solid ${grey[200]}`,
+                                    borderRadius: '4px',
+                                }}
                             >
-                                <MenuItem value="all">Everyone can view file</MenuItem>
-                                <MenuItem value="students_view">Students can view file</MenuItem>
-                                <MenuItem value="teachers_view">Teachers can view file</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Box>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        gap: 2
+                                    }}
+                                >
+                                    <Box>
+                                        <Typography
+                                            sx={{
+                                                color: darkGrey,
+                                                fontWeight: 500,
+                                                lineHeight: '20px'
+                                            }}
+                                            variant="body1"
+                                        >
+                                            { file.name }
+                                        </Typography>
+                                        <Typography sx={{ color: textColor, lineHeight: '20px' }}variant="body1">
+                                            { file.type }
+                                        </Typography>
+                                    </Box>
+                                    <IconButton
+                                        onClick={() => handleRemoveFile(file.name)}
+                                    >
+                                        <CloseIcon
+                                            sx={{
+                                                color: 'black'
+                                            }}
+                                        />
+                                    </IconButton>
+                                </Box>
 
-                    <Box
-                        p={2}
-                        sx={{
-                            marginTop: 3,
-                            border: `1px solid ${grey[200]}`,
-                            borderRadius: '4px',
+                                {/*<FormControl variant="filled" sx={{ marginTop: 2, maxWidth: '250px', width: '100%' }}>*/}
+                                {/*    <InputLabel id="select-permission-label">Permission</InputLabel>*/}
+                                {/*    <Select*/}
+                                {/*        labelId="select-permission-label"*/}
+                                {/*        id="select-permission"*/}
+                                {/*        value={permission}*/}
+                                {/*        onChange={handleChangePermission}*/}
+                                {/*        label="Permision"*/}
+                                {/*    >*/}
+                                {/*        <MenuItem value="all">Everyone can view file</MenuItem>*/}
+                                {/*        <MenuItem value="students_view">Students can view file</MenuItem>*/}
+                                {/*        <MenuItem value="teachers_view">Teachers can view file</MenuItem>*/}
+                                {/*    </Select>*/}
+                                {/*</FormControl>*/}
+                            </Box>
+                        );
+                    })}
+
+
+                    <form
+                        style={{
+                            width: '100%',
+                            marginTop: 24
                         }}
+                        encType="multipart/form-data"
+                        action=""
                     >
-                        <Typography
-                            sx={{
-                                color: darkGrey,
-                                fontWeight: 500,
-                                lineHeight: '20px'
+                        <label
+                            style={{
+                                width: '100%',
                             }}
-                            variant="body1"
+                            htmlFor="file-input"
                         >
-                            Attach
-                        </Typography>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'space-around',
-                                gap: 1,
-                                marginTop: 2
-                            }}
-                        >
-                            <Button>Drive</Button>
-                            <Button>YouTube</Button>
-                            <Button>Create</Button>
-                            <Button>Upload</Button>
-                            <Button>Link</Button>
-                        </Box>
-                    </Box>
+                            <input
+                                id="file-input"
+                                type="file"
+                                name="image"
+                                multiple
+                                style={{
+                                    display: 'none'
+                                }}
+                                onChange={(event) => {
+                                    handleAddFiles(event.target.files[0]);
+                                }}
+                            />
+                            <Box
+                                variant="contained"
+                                size="large"
+                                fullWidth
+                                htmlFor="file-input"
+                                sx={{
+                                    color: darkGrey,
+                                    background: 'transparent',
+                                    boxShadow: 'none',
+                                    border: `1px solid ${grey[400]}`,
+                                    textTransform: 'none',
+                                    borderRadius: '100px',
+                                    width: '100%',
+                                    padding: '10px 22px',
+                                    fontWeight: 500,
+                                    textAlign: 'center',
+                                    transition: 'background-color 100ms linear',
+                                    textOverflow: 'ellipsis',
+                                    overflow: 'hidden',
+                                    whiteSpace: 'nowrap',
+                                    '&:hover': {
+                                        backgroundColor: grey[300],
+                                        boxShadow: 'none',
+                                        cursor: 'pointer',
+                                    }
+                                }}
+                            >
+                                + Add file
+                            </Box>
+                        </label>
+                    </form>
+
+                    {/*<Box*/}
+                    {/*    p={2}*/}
+                    {/*    sx={{*/}
+                    {/*        marginTop: 3,*/}
+                    {/*        border: `1px solid ${grey[200]}`,*/}
+                    {/*        borderRadius: '4px',*/}
+                    {/*    }}*/}
+                    {/*>*/}
+                        {/*<Typography*/}
+                        {/*    sx={{*/}
+                        {/*        color: darkGrey,*/}
+                        {/*        fontWeight: 500,*/}
+                        {/*        lineHeight: '20px'*/}
+                        {/*    }}*/}
+                        {/*    variant="body1"*/}
+                        {/*>*/}
+                        {/*    Attach*/}
+                        {/*</Typography>*/}
+                        {/*<Box*/}
+                        {/*    sx={{*/}
+                        {/*        display: 'flex',*/}
+                        {/*        justifyContent: 'space-around',*/}
+                        {/*        gap: 1,*/}
+                        {/*        marginTop: 2*/}
+                        {/*    }}*/}
+                        {/*>*/}
+                        {/*    <Button>Drive</Button>*/}
+                        {/*    <Button>YouTube</Button>*/}
+                        {/*    <Button>Create</Button>*/}
+                        {/*    <Button>Upload</Button>*/}
+                        {/*    <Button>Link</Button>*/}
+                        {/*</Box>*/}
+                    {/*</Box>*/}
 
                     <Box
                         sx={{
@@ -234,7 +325,7 @@ export default function CreatAssignment() {
                             <Grid item xs={6}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DatePicker
-                                        label="Schedule"
+                                        label="Due to date"
                                         value={date}
                                         sx={{
                                             "&.MuiTextField-root": {
@@ -247,7 +338,7 @@ export default function CreatAssignment() {
                             </Grid>
 
                             <Grid item xs={6}>
-                                <FormControl sx={{width: '100%', marginTop: 1}} variant="outlined">
+                                <FormControl sx={{width: '100%'}} variant="outlined">
                                     <InputLabel id="select-grade-label">Grade</InputLabel>
                                     <Select
                                         labelId="select-grade-label"
@@ -269,7 +360,7 @@ export default function CreatAssignment() {
                         variant="contained"
                         size="large"
                         fullWidth
-                        onClick={handleClose}
+                        onClick={handleCloseModal}
                         sx={{
                             color: 'white',
                             background: grey[900],
@@ -283,6 +374,62 @@ export default function CreatAssignment() {
                         }}
                     >
                         Assign
+                    </Button>
+                </Box>
+            </Modal>
+
+            <Modal
+                open={openModal === 'topic'}
+                onClose={handleCloseModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box
+                    p={5}
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '520px',
+                        bgcolor: 'white'
+                    }}
+                >
+                    <Typography sx={{fontWeight: 500, lineHeigth: '28px'}} variant="h5">
+                        Create topic
+                    </Typography>
+
+                    <TextField
+                        variant="filled"
+                        margin="normal"
+                        label="Title"
+                        type="text"
+                        fullWidth
+                        sx={{
+                            marginTop: 3
+                        }}
+                        value={topic}
+                        onChange={(e) => setTopic(e.target.value)}
+                    />
+
+                    <Button
+                        variant="contained"
+                        size="large"
+                        fullWidth
+                        onClick={handleCloseModal}
+                        sx={{
+                            color: 'white',
+                            background: grey[900],
+                            boxShadow: 'none',
+                            borderRadius: '100px',
+                            marginTop: 3,
+                            '&.MuiButton-root:hover': {
+                                bgcolor: grey[800],
+                                boxShadow: 'none'
+                            }
+                        }}
+                    >
+                        Create topic
                     </Button>
                 </Box>
             </Modal>

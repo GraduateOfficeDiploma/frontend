@@ -33,12 +33,9 @@ const PLACEHOLDER_LINKS = [
 ];
 
 export default function RootLayout({children}) {
-    const [isSignedIn, setIsSignedIn] = React.useState(true);
     const session = useSession();
-
-    console.log('kuku', session)
-
-    const DRAWER_WIDTH = session?.data?.user ? 240 : 0;
+    const isSignedIn = session.status === 'authenticated';
+    const DRAWER_WIDTH = isSignedIn ? 240 : 0;
 
     return (
         <ThemeRegistry>
@@ -52,11 +49,11 @@ export default function RootLayout({children}) {
                         Graduate Students Office
                     </Typography>
 
-                    { session?.data?.user &&
+                    { isSignedIn &&
                         <ListItemButton onClick={() => signOut()} sx={{display: 'flex', flex: 'inherit'}}>
                             <ListItemText
                                 sx={{color: 'black', marginRight: '10px'}}
-                                primary={session?.data?.user?.fullName}
+                                primary={session?.data?.user?.name}
                             />
                             <ListItemIcon sx={{minWidth: 0}}>
                                 <LogoutIcon/>
@@ -65,7 +62,7 @@ export default function RootLayout({children}) {
                     }
                 </Toolbar>
             </AppBar>
-            { session?.data?.user &&
+            { isSignedIn &&
                 <Drawer
                     sx={{
                         width: DRAWER_WIDTH,
