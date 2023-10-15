@@ -9,45 +9,14 @@ import CreateCourse from "../src/components/CreateCourse/CreateCourse";
 import CreatAssignment from "../src/components/CreateAssignment/CreatAssignment";
 import {Alert, AlertTitle, Fade} from "@mui/material";
 import axios from "axios";
-import {getSession, useSession} from "next-auth/react";
+import {useSession} from "next-auth/react";
 import {useEffect} from "react";
-
-// export async function getStaticProps(context) {
-//     const session = await getSession(context);
-//
-//     try {
-//         console.log('kuku token', context);
-//
-//         const response = axios.get(`${process.env.BACKEND_URL}/api/courses`, {
-//             headers: {
-//                 Authorization: `Bearer ${session.data.user.accessToken}`
-//             }
-//         });
-//
-//         console.log('kuku data 1', response)
-//
-//         return {
-//             props: {
-//                 data: response
-//             }
-//         }
-//     } catch (error) {
-//         console.log('kuku data 2', error)
-//     }
-//
-//     return {
-//         props: {
-//             data: 'error'
-//         }
-//     };
-// }
 
 export default function Courses() {
     const [courses, setCourses] = React.useState([]);
+    const [isLoaded, setIsLoaded] = React.useState(false);
     const [alertVisibility, setAlertVisibility] = React.useState({visible: false, type: '', message: ''});
     const session = useSession();
-
-    console.log('kuku here', courses)
 
     useEffect(() => {
         if(session?.status === 'authenticated') {
@@ -58,18 +27,24 @@ export default function Courses() {
             })
             .then(function (response) {
                 setCourses([...response.data]);
+
+                setIsLoaded(true);
             })
             .catch(function (error) {
-                console.log('kuku', error)
+
             });
         }
     }, [session]);
+
+    if(!isLoaded) {
+        return null;
+    }
 
     return (
         <Box sx={{ flexGrow: 1 }} p={2}>
             <Box
                 sx={{
-                    position: 'absolute',
+                    position: 'fixed',
                     bottom: 16,
                     left: 16,
                     width: '500px',
@@ -113,10 +88,13 @@ export default function Courses() {
                 { courses.map(course => (
                     <CourseCard course={course} />
                 ))}
-                <AddCourse />
+                <AddCourse
+                    setCourses={setCourses}
+                />
                 <CreateCourse
                     alertVisibility={alertVisibility}
                     setAlertVisibility={setAlertVisibility}
+                    setCourses={setCourses}
                 />
                 <CreatAssignment />
             </Grid>

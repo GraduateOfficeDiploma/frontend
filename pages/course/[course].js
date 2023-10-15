@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import Course from "../../src/components/Course/Course";
 import { useRouter } from 'next/router'
+import PersonCard from "../../src/components/PersonCard/PersonCard";
 
 export default function CoursePage() {
     const router = useRouter();
@@ -21,7 +22,7 @@ export default function CoursePage() {
 
     return (
         <Box sx={{flexGrow: 1}} p={2}>
-            <Typography sx={{fontWeight: 500}} variant="h4">English language ({ router.query.course })</Typography>
+            <Typography sx={{fontWeight: 500}} variant="h4">English language</Typography>
 
             <FormControl variant="filled" sx={{margin: '32px 0 40px', width: '240px'}}>
                 <InputLabel id="demo-simple-select-standard-label">Topics</InputLabel>
@@ -38,8 +39,21 @@ export default function CoursePage() {
                 </Select>
             </FormControl>
 
+            <Box
+                sx={{
+                    marginBottom: 4
+                }}
+            >
+                <Typography sx={{fontWeight: 500, marginBottom: 2}} variant="h5">Students</Typography>
+
+                <PersonCard />
+                <PersonCard />
+                <PersonCard />
+                <PersonCard />
+            </Box>
+
             <Box>
-                <Typography sx={{fontWeight: 500, marginBottom: 2}} variant="h5">Case studies</Typography>
+                <Typography sx={{fontWeight: 500, marginBottom: 2}} variant="h5">Assignments</Typography>
 
                 <Box
                     sx={{

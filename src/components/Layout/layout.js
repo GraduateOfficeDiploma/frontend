@@ -34,7 +34,7 @@ const PLACEHOLDER_LINKS = [
 
 export default function RootLayout({children}) {
     const session = useSession();
-    const isSignedIn = session.status === 'authenticated';
+    const isSignedIn = session.status === 'authenticated' || session.status === 'loading';
     const DRAWER_WIDTH = isSignedIn ? 240 : 0;
 
     return (

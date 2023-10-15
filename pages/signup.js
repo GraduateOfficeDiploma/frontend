@@ -6,8 +6,9 @@ import { grey } from '@mui/material/colors';
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { signIn } from "next-auth/react";
+import {signIn, useSession} from "next-auth/react";
 import {validate} from "react-email-validator";
+import {useEffect} from "react";
 
 
 export default function Signup({ user }) {
@@ -19,6 +20,13 @@ export default function Signup({ user }) {
     const [signupError, setSignupError] = React.useState(false);
     const [role, setRole] = React.useState('');
     const router = useRouter();
+    const session= useSession();
+
+    useEffect(() => {
+        if(session.status === "authenticated") {
+            router.push(`${window.location.origin}/courses`);
+        }
+    }, []);
 
     const handleChange = (event) => {
         setRole(event.target.value);

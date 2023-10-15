@@ -9,11 +9,12 @@ import {Alert, AlertTitle, Fade, Modal, TextField} from "@mui/material";
 import axios from "axios";
 import {useSession} from "next-auth/react";
 
-export default function AddCourse() {
+export default function AddCourse(props) {
     const [open, setOpen] = React.useState(false);
     const [courseCode, setCourseCode] = React.useState('');
     const [alertVisibility, setAlertVisibility] = React.useState({visible: false, type: ''});
     const session = useSession();
+    const {setCourses} = props;
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -28,6 +29,18 @@ export default function AddCourse() {
         })
         .then(function (response) {
             setAlertVisibility({visible: true, type: 'success'});
+
+            axios.get(`${process.env.BACKEND_URL}/api/courses`, {
+                headers: {
+                    Authorization: `Bearer ${session.data.user.accessToken}`
+                }
+            })
+            .then(function (response) {
+                setCourses([...response.data]);
+            })
+            .catch(function (error) {
+                console.log('kuku', error)
+            });
 
             handleClose();
         })

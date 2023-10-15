@@ -28,7 +28,11 @@ export default function Course() {
                 bgcolor: grey[200],
                 border: `1px solid ${grey[400]}`,
                 borderRadius: '8px !important',
-                boxShadow: 'none'
+                boxShadow: 'none',
+                margin: '0px !important',
+                '&.MuiButton-root:hover': {
+                    bgcolor: grey[200],
+                },
             }}
         >
             <AccordionSummary
@@ -42,7 +46,7 @@ export default function Course() {
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         width: '100%',
-                        margin: '6px 0'
+                        margin: '2px 0'
                     }}
                 >
                     <Box

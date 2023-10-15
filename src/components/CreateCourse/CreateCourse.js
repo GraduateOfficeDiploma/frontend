@@ -20,31 +20,39 @@ export default function CreateCourse(props) {
     const [date, setDate] = React.useState([]);
     const [image, setImage] = React.useState(null);
     const session = useSession();
-    const {alertVisibility, setAlertVisibility} = props;
+    const {alertVisibility, setAlertVisibility, setCourses} = props;
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     const handleCreateCourse = () => {
         const fd = new FormData();
-        fd.append('file', image);
+        fd.append('image', image);
+        fd.append('name', courseName);
 
-        const schedule = [];
         date.forEach(item => {
-            schedule.push(dayjs(item).toString());
+            fd.append('schedule[]', dayjs(item).toString());
         })
 
-        axios.post(`${process.env.BACKEND_URL}/api/courses`, {
-            name: courseName,
-            schedule: schedule,
-            image: image
-        }, {
+        axios.post(`${process.env.BACKEND_URL}/api/courses`, fd, {
             headers: {
                 Authorization: `Bearer ${session.data.user.accessToken}`
             }
         })
         .then(function (response) {
             setAlertVisibility({visible: true, type: 'success', message: 'Course created successfully'});
+
+            axios.get(`${process.env.BACKEND_URL}/api/courses`, {
+                headers: {
+                    Authorization: `Bearer ${session.data.user.accessToken}`
+                }
+            })
+            .then(function (response) {
+                setCourses([...response.data]);
+            })
+            .catch(function (error) {
+                console.log('kuku', error)
+            });
 
             handleClose();
         })

@@ -5,25 +5,23 @@ import {TextField, Box, Link} from "@mui/material";
 import { grey } from '@mui/material/colors';
 import Button from "@mui/material/Button";
 import { useRouter } from "next/router";
-import { signIn } from "next-auth/react";
+import {signIn, useSession} from "next-auth/react";
 import {validate} from "react-email-validator";
-
-export async function getServerSideProps() {
-    console.log('kuku', `${process.env.BACKEND_URL}/api/courses`);
-
-    return {
-        props: {
-
-        }
-    };
-}
+import {useEffect} from "react";
 
 export default function Login() {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [loginError, setLoginError] = React.useState(false);
     const [emailError, setEmailError] = React.useState(false);
+    const session= useSession();
     const router = useRouter();
+
+    useEffect(() => {
+        if(session.status === "authenticated") {
+            router.push(`${window.location.origin}/courses`);
+        }
+    }, [session]);
 
     const handleLogin = async () => {
         setLoginError(false);
