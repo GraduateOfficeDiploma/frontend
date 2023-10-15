@@ -96,7 +96,6 @@ export default function Courses() {
                     setAlertVisibility={setAlertVisibility}
                     setCourses={setCourses}
                 />
-                <CreatAssignment />
             </Grid>
         </Box>
     );

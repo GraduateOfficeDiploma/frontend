@@ -79,6 +79,7 @@ export default function CreatAssignment() {
                     textTransform: 'none',
                     borderRadius: '100px',
                     maxWidth: '312px',
+                    lineHeight: '22px',
                     '&.MuiButton-root:hover': {
                         bgcolor: grey[300],
                         boxShadow: 'none'
@@ -97,10 +98,10 @@ export default function CreatAssignment() {
                     'aria-labelledby': 'basic-button',
                 }}
             >
-                <MenuItem onClick={() => handleCloseMenu('assignment')}>Assignment</MenuItem>
+                <MenuItem sx={{ width: '312px', fontWeight: 500 }} onClick={() => handleCloseMenu('assignment')}>Assignment</MenuItem>
                 {/*<MenuItem onClick={() => handleCloseMenu('2')}>Quiz assignment</MenuItem>*/}
                 {/*<MenuItem onClick={() => handleCloseMenu('3')}>Material</MenuItem>*/}
-                <MenuItem onClick={() => handleCloseMenu('topic')}>Topic</MenuItem>
+                <MenuItem sx={{ width: '312px', fontWeight: 500 }} onClick={() => handleCloseMenu('topic')}>Topic</MenuItem>
             </Menu>
 
             <Modal

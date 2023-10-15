@@ -11,6 +11,7 @@ import {
 import Course from "../../src/components/Course/Course";
 import { useRouter } from 'next/router'
 import PersonCard from "../../src/components/PersonCard/PersonCard";
+import CreatAssignment from "../../src/components/CreateAssignment/CreatAssignment";
 
 export default function CoursePage() {
     const router = useRouter();
@@ -24,20 +25,29 @@ export default function CoursePage() {
         <Box sx={{flexGrow: 1}} p={2}>
             <Typography sx={{fontWeight: 500}} variant="h4">English language</Typography>
 
-            <FormControl variant="filled" sx={{margin: '32px 0 40px', width: '240px'}}>
-                <InputLabel id="demo-simple-select-standard-label">Topics</InputLabel>
-                <Select
-                    labelId="demo-simple-select-standard-label"
-                    id="demo-simple-select-standard"
-                    value={topics}
-                    onChange={handleChangeYear}
-                    label="Person"
-                >
-                    <MenuItem value="all">All topics</MenuItem>
-                    <MenuItem value="case_studies">Case studies</MenuItem>
-                    <MenuItem value="topic2">Topic 2</MenuItem>
-                </Select>
-            </FormControl>
+            {/*<FormControl variant="filled" sx={{margin: '32px 0 40px', width: '240px'}}>*/}
+            {/*    <InputLabel id="demo-simple-select-standard-label">Topics</InputLabel>*/}
+            {/*    <Select*/}
+            {/*        labelId="demo-simple-select-standard-label"*/}
+            {/*        id="demo-simple-select-standard"*/}
+            {/*        value={topics}*/}
+            {/*        onChange={handleChangeYear}*/}
+            {/*        label="Person"*/}
+            {/*    >*/}
+            {/*        <MenuItem value="all">All topics</MenuItem>*/}
+            {/*        <MenuItem value="case_studies">Case studies</MenuItem>*/}
+            {/*        <MenuItem value="topic2">Topic 2</MenuItem>*/}
+            {/*    </Select>*/}
+            {/*</FormControl>*/}
+
+            <Box
+                sx={{
+                    margin: '16px 0 40px'
+                }}
+            >
+                <CreatAssignment />
+            </Box>
+
 
             <Box
                 sx={{
