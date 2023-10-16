@@ -20,6 +20,7 @@ import ThemeRegistry from "../ThemeRegistry/ThemeRegistry";
 import TaskIcon from '@mui/icons-material/Task';
 import SchoolIcon from '@mui/icons-material/School';
 import {signOut, useSession} from "next-auth/react"
+import { usePathname } from 'next/navigation'
 
 const LINKS = [
     {text: 'My courses', href: '/courses', icon: SchoolIcon},
@@ -34,7 +35,9 @@ const PLACEHOLDER_LINKS = [
 
 export default function RootLayout({children}) {
     const session = useSession();
-    const isSignedIn = session.status === 'authenticated' || session.status === 'loading';
+    const pathname = usePathname();
+    const isSignedIn = session.status === 'authenticated' || session.status === 'loading'
+        && (pathname !== '/login' && pathname !== '/signup');
     const DRAWER_WIDTH = isSignedIn ? 240 : 0;
 
     return (
