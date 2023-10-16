@@ -47,7 +47,7 @@ export default function Login() {
     };
 
     const handleEmailError = () => {
-        if(!validate(email)) {
+        if(email.length && !validate(email)) {
             setEmailError(true);
         } else {
             setEmailError(false);

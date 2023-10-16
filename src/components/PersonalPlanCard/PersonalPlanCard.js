@@ -3,7 +3,6 @@ import * as React from 'react';
 import {grey} from '@mui/material/colors';
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import Divider from "@mui/material/Divider";
 import {
     Accordion,
@@ -17,7 +16,6 @@ import Button from "@mui/material/Button";
 import StickyNote2OutlinedIcon from '@mui/icons-material/StickyNote2Outlined';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import SendIcon from '@mui/icons-material/Send';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 export default function PersonalPlanCard() {
     const textColor = "#6E6E6E";
@@ -51,8 +49,6 @@ export default function PersonalPlanCard() {
         setMessages(prev => ([...prev, newMessage]));
         setMessage('');
     }
-
-    console.log('kuku', message);
 
     return (
         <Accordion

@@ -22,11 +22,16 @@ import SchoolIcon from '@mui/icons-material/School';
 import {signOut, useSession} from "next-auth/react"
 import { usePathname } from 'next/navigation'
 
-const LINKS = [
+const STUDENT_LINKS = [
     {text: 'My courses', href: '/courses', icon: SchoolIcon},
     {text: 'Tasks', href: '/tasks', icon: TaskIcon},
     {text: 'Personal plan', href: '/personal_plan', icon: ChecklistIcon},
 ];
+
+const TEACHER_LINKS = [
+    {text: 'Courses', href: '/courses', icon: SchoolIcon},
+    {text: 'Students plans', href: '/student_plan', icon: ChecklistIcon},
+]
 
 const PLACEHOLDER_LINKS = [
     {text: 'Settings', icon: SettingsIcon},
@@ -39,6 +44,12 @@ export default function RootLayout({children}) {
     const isSignedIn = session.status === 'authenticated' || session.status === 'loading'
         && (pathname !== '/login' && pathname !== '/signup');
     const DRAWER_WIDTH = isSignedIn ? 240 : 0;
+
+    let LINKS = TEACHER_LINKS;
+
+    if(isSignedIn && session.status === 'authenticated') {
+        LINKS = session?.data?.user?.role === 'teacher' ? TEACHER_LINKS : STUDENT_LINKS;
+    }
 
     return (
         <ThemeRegistry>

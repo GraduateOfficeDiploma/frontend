@@ -61,6 +61,7 @@ export default NextAuth({
         async session({ session, token }) {
             session.user.accessToken = token.accessToken;
             session.user.fullName = token.fullName;
+            session.user.role = 'teacher';
 
             return session;
         },

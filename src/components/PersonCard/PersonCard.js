@@ -6,9 +6,10 @@ import Box from "@mui/material/Box";
 import {Avatar} from "@mui/material";
 import Button from "@mui/material/Button";
 
-export default function PersonCard() {
+export default function PersonCard({navigateTo}) {
     return (
         <Button
+            href={navigateTo}
             fullWidth
             sx={{
                 display: 'flex',

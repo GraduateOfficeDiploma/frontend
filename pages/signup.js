@@ -18,7 +18,7 @@ export default function Signup({ user }) {
     const [emailError, setEmailError] = React.useState(false);
     const [passwordError, setPasswordError] = React.useState(false);
     const [signupError, setSignupError] = React.useState(false);
-    const [role, setRole] = React.useState('');
+    const [role, setRole] = React.useState('student');
     const router = useRouter();
     const session= useSession();
 
@@ -33,7 +33,7 @@ export default function Signup({ user }) {
     };
 
     const handleEmailError = () => {
-        if(!validate(email)) {
+        if(email.length && !validate(email)) {
             setEmailError(true);
         } else {
             setEmailError(false);
@@ -41,7 +41,7 @@ export default function Signup({ user }) {
     }
 
     const handlePasswordError = () => {
-        if(password.length < 8) {
+        if(password.length && password.length < 8) {
             setPasswordError(true);
         } else {
             setPasswordError(false);
@@ -116,19 +116,19 @@ export default function Signup({ user }) {
                         flexDirection: 'column'
                     }}
                 >
-                    {/*<FormControl fullWidth variant="filled" sx={{ margin: '24px 0 0' }}>*/}
-                    {/*    <InputLabel id="demo-simple-select-standard-label">Person</InputLabel>*/}
-                    {/*    <Select*/}
-                    {/*        labelId="demo-simple-select-standard-label"*/}
-                    {/*        id="demo-simple-select-standard"*/}
-                    {/*        value={role}*/}
-                    {/*        onChange={handleChange}*/}
-                    {/*        label="Person"*/}
-                    {/*    >*/}
-                    {/*        <MenuItem value="student">Student</MenuItem>*/}
-                    {/*        <MenuItem value="teacher">Teacher</MenuItem>*/}
-                    {/*    </Select>*/}
-                    {/*</FormControl>*/}
+                    <FormControl fullWidth variant="filled" sx={{ margin: '24px 0 0' }}>
+                        <InputLabel id="demo-simple-select-standard-label">Person</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-standard-label"
+                            id="demo-simple-select-standard"
+                            value={role}
+                            onChange={handleChange}
+                            label="Person"
+                        >
+                            <MenuItem value="student">Student</MenuItem>
+                            <MenuItem value="teacher">Teacher</MenuItem>
+                        </Select>
+                    </FormControl>
                     <TextField
                         variant="filled"
                         margin="normal"

@@ -17,9 +17,12 @@ export default function Courses() {
     const [isLoaded, setIsLoaded] = React.useState(false);
     const [alertVisibility, setAlertVisibility] = React.useState({visible: false, type: '', message: ''});
     const session = useSession();
+    const [isTeacher, setIsTeacher] = React.useState(false);
 
     useEffect(() => {
         if(session?.status === 'authenticated') {
+            setIsTeacher(session?.data?.user?.role === 'teacher');
+
             axios.get(`${process.env.BACKEND_URL}/api/courses`, {
                 headers: {
                     Authorization: `Bearer ${session.data.user.accessToken}`
@@ -88,15 +91,17 @@ export default function Courses() {
                 { courses.map(course => (
                     <CourseCard course={course} />
                 ))}
-                <AddCourse
-                    setCourses={setCourses}
-                    setAlertVisibility={setAlertVisibility}
-                />
-                <CreateCourse
+
+                { isTeacher ? <CreateCourse
                     alertVisibility={alertVisibility}
                     setAlertVisibility={setAlertVisibility}
                     setCourses={setCourses}
-                />
+                /> :
+                    <AddCourse
+                        setCourses={setCourses}
+                        setAlertVisibility={setAlertVisibility}
+                    />
+                }
             </Grid>
         </Box>
     );

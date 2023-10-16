@@ -5,9 +5,9 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import {FormControl, IconButton, InputLabel, Menu, MenuItem, Modal, Select, TextField} from "@mui/material";
 import Box from "@mui/material/Box";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import Grid from "@mui/material/Grid";
 import CloseIcon from '@mui/icons-material/Close';
@@ -25,8 +25,9 @@ export default function CreatAssignment(props) {
     const [files, setFiles] = React.useState([]);
     const [selectedTopic, setSelectedTopic] = React.useState('assignments')
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [year, setYear] = React.useState(1);
     const openMenu = Boolean(anchorEl);
-    const { courseId } = props;
+    const {courseId, isStudentsPersonalPlan} = props;
     const session = useSession();
 
     const handleClick = (event) => {
@@ -34,7 +35,7 @@ export default function CreatAssignment(props) {
     };
 
     const handleCloseMenu = (modal) => {
-        if(modal) {
+        if (modal) {
             handleOpenModal(modal);
         }
 
@@ -53,10 +54,14 @@ export default function CreatAssignment(props) {
         setSelectedTopic(event.target.value);
     };
 
+    const handleChangeYear = (event) => {
+        setYear(event.target.value);
+    }
+
     const handleAddFiles = (file) => {
         console.log('kuku', file)
 
-        if(!files.find(item => item.name === file.name)) {
+        if (!files.find(item => item.name === file.name)) {
             setFiles([...files, file]);
         }
     }
@@ -74,7 +79,7 @@ export default function CreatAssignment(props) {
 
         fd.append('title', assignmentTitle);
 
-        if(assignmentDescription) {
+        if (assignmentDescription) {
             fd.append('description', assignmentDescription);
         }
 
@@ -86,18 +91,18 @@ export default function CreatAssignment(props) {
                 Authorization: `Bearer ${session.data.user.accessToken}`
             }
         })
-        .then(function (response) {
-            // setAlertVisibility({visible: true, type: 'success', message: 'Assignment created successfully'});
+            .then(function (response) {
+                // setAlertVisibility({visible: true, type: 'success', message: 'Assignment created successfully'});
 
-            console.log('kuku success', response);
+                console.log('kuku success', response);
 
-            handleCloseModal();
-        })
-        .catch(function (error) {
-            console.log('kuku error', error);
+                handleCloseModal();
+            })
+            .catch(function (error) {
+                console.log('kuku error', error);
 
-            // setAlertVisibility({visible: true, type: 'error', message: 'Error creating assignment'});
-        });
+                // setAlertVisibility({visible: true, type: 'error', message: 'Error creating assignment'});
+            });
     }
 
     const darkGrey = '#373737';
@@ -137,10 +142,11 @@ export default function CreatAssignment(props) {
                     'aria-labelledby': 'basic-button',
                 }}
             >
-                <MenuItem sx={{ width: '312px', fontWeight: 500 }} onClick={() => handleCloseMenu('assignment')}>Assignment</MenuItem>
+                <MenuItem sx={{width: '312px', fontWeight: 500}}
+                          onClick={() => handleCloseMenu('assignment')}>Assignment</MenuItem>
                 {/*<MenuItem onClick={() => handleCloseMenu('2')}>Quiz assignment</MenuItem>*/}
                 {/*<MenuItem onClick={() => handleCloseMenu('3')}>Material</MenuItem>*/}
-                <MenuItem sx={{ width: '312px', fontWeight: 500 }} onClick={() => handleCloseMenu('topic')}>Topic</MenuItem>
+                {/*<MenuItem sx={{ width: '312px', fontWeight: 500 }} onClick={() => handleCloseMenu('topic')}>Topic</MenuItem>*/}
             </Menu>
 
             <Modal
@@ -192,7 +198,7 @@ export default function CreatAssignment(props) {
                         onChange={(e) => setAssignmentDescription(e.target.value)}
                     />
 
-                    { files.map(file => {
+                    {files.map(file => {
                         return (
                             <Box
                                 p={2}
@@ -218,10 +224,10 @@ export default function CreatAssignment(props) {
                                             }}
                                             variant="body1"
                                         >
-                                            { file.name }
+                                            {file.name}
                                         </Typography>
-                                        <Typography sx={{ color: textColor, lineHeight: '20px' }}variant="body1">
-                                            { file.type }
+                                        <Typography sx={{color: textColor, lineHeight: '20px'}} variant="body1">
+                                            {file.type}
                                         </Typography>
                                     </Box>
                                     <IconButton
@@ -320,30 +326,30 @@ export default function CreatAssignment(props) {
                     {/*        borderRadius: '4px',*/}
                     {/*    }}*/}
                     {/*>*/}
-                        {/*<Typography*/}
-                        {/*    sx={{*/}
-                        {/*        color: darkGrey,*/}
-                        {/*        fontWeight: 500,*/}
-                        {/*        lineHeight: '20px'*/}
-                        {/*    }}*/}
-                        {/*    variant="body1"*/}
-                        {/*>*/}
-                        {/*    Attach*/}
-                        {/*</Typography>*/}
-                        {/*<Box*/}
-                        {/*    sx={{*/}
-                        {/*        display: 'flex',*/}
-                        {/*        justifyContent: 'space-around',*/}
-                        {/*        gap: 1,*/}
-                        {/*        marginTop: 2*/}
-                        {/*    }}*/}
-                        {/*>*/}
-                        {/*    <Button>Drive</Button>*/}
-                        {/*    <Button>YouTube</Button>*/}
-                        {/*    <Button>Create</Button>*/}
-                        {/*    <Button>Upload</Button>*/}
-                        {/*    <Button>Link</Button>*/}
-                        {/*</Box>*/}
+                    {/*<Typography*/}
+                    {/*    sx={{*/}
+                    {/*        color: darkGrey,*/}
+                    {/*        fontWeight: 500,*/}
+                    {/*        lineHeight: '20px'*/}
+                    {/*    }}*/}
+                    {/*    variant="body1"*/}
+                    {/*>*/}
+                    {/*    Attach*/}
+                    {/*</Typography>*/}
+                    {/*<Box*/}
+                    {/*    sx={{*/}
+                    {/*        display: 'flex',*/}
+                    {/*        justifyContent: 'space-around',*/}
+                    {/*        gap: 1,*/}
+                    {/*        marginTop: 2*/}
+                    {/*    }}*/}
+                    {/*>*/}
+                    {/*    <Button>Drive</Button>*/}
+                    {/*    <Button>YouTube</Button>*/}
+                    {/*    <Button>Create</Button>*/}
+                    {/*    <Button>Upload</Button>*/}
+                    {/*    <Button>Link</Button>*/}
+                    {/*</Box>*/}
                     {/*</Box>*/}
 
                     <Box
@@ -377,21 +383,43 @@ export default function CreatAssignment(props) {
                                 </LocalizationProvider>
                             </Grid>
 
-                            <Grid item xs={6}>
-                                <FormControl sx={{width: '100%'}} variant="outlined">
-                                    <InputLabel id="select-grade-label">Topics</InputLabel>
-                                    <Select
-                                        labelId="select-grade-label"
-                                        id="select-grade"
-                                        value={selectedTopic}
-                                        onChange={handleChangeGrade}
-                                        label="Topics"
-                                    >
-                                        <MenuItem value="assignments">Assignments</MenuItem>
-                                        <MenuItem value="other">Other topic</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Grid>
+                            {isStudentsPersonalPlan ?
+                                <Grid item xs={6}>
+                                    <FormControl sx={{width: '100%'}} variant="outlined">
+                                        <InputLabel id="select-year-label">Year</InputLabel>
+                                        <Select
+                                            labelId="select-year-label"
+                                            id="select-year"
+                                            value={year}
+                                            onChange={handleChangeYear}
+                                            label="Year"
+                                        >
+                                            <MenuItem value={1}>1</MenuItem>
+                                            <MenuItem value={2}>2</MenuItem>
+                                            <MenuItem value={3}>3</MenuItem>
+                                            <MenuItem value={4}>4</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                :
+                                <Grid item xs={6}>
+                                    <FormControl sx={{width: '100%'}} variant="outlined">
+                                        <InputLabel id="select-grade-label">Topics</InputLabel>
+                                        <Select
+                                            labelId="select-grade-label"
+                                            id="select-grade"
+                                            value={selectedTopic}
+                                            onChange={handleChangeGrade}
+                                            label="Topics"
+                                        >
+                                            <MenuItem value="assignments">Assignments</MenuItem>
+                                            <MenuItem value="other">Other topic</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                            }
+
+
                         </Grid>
                     </Box>
 

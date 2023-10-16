@@ -65,7 +65,7 @@ export default function AddCourse(props) {
                     flexDirection: 'column',
                     borderRadius: '8px',
                     border: `1px dashed ${grey[400]}`,
-                    padding: 2,
+                    padding: '60px 16px',
                     height: '100%',
                     textTransform: 'none',
                     color: grey[900],

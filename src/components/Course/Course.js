@@ -105,7 +105,7 @@ export default function Course() {
                                 borderRadius: '4px 0 0 4px',
                             }}
                         >
-                            Preview
+                            Download
                         </Box>
                         <Box
                             sx={{
@@ -158,7 +158,7 @@ export default function Course() {
                                 borderRadius: '4px 0 0 4px',
                             }}
                         >
-                            Preview
+                            Download
                         </Box>
                         <Box
                             sx={{
