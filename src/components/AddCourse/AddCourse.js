@@ -12,11 +12,11 @@ import {useSession} from "next-auth/react";
 export default function AddCourse(props) {
     const [open, setOpen] = React.useState(false);
     const [courseCode, setCourseCode] = React.useState('');
-    const [alertVisibility, setAlertVisibility] = React.useState({visible: false, type: ''});
     const session = useSession();
-    const {setCourses} = props;
+    const {setCourses, setAlertVisibility} = props;
 
     const handleOpen = () => setOpen(true);
+
     const handleClose = () => setOpen(false);
 
     const handleAddCourse = () => {
@@ -28,7 +28,7 @@ export default function AddCourse(props) {
             }
         })
         .then(function (response) {
-            setAlertVisibility({visible: true, type: 'success'});
+            setAlertVisibility({visible: true, type: 'success', message: 'Course added successfully'});
 
             axios.get(`${process.env.BACKEND_URL}/api/courses`, {
                 headers: {
@@ -45,7 +45,7 @@ export default function AddCourse(props) {
             handleClose();
         })
         .catch(function (error) {
-            setAlertVisibility({visible: true, type: 'error'});
+            setAlertVisibility({visible: true, type: 'error', message: 'Error adding course'});
         });
     }
 
@@ -107,50 +107,6 @@ export default function AddCourse(props) {
             >
                 <>
                     <Box
-                        sx={{
-                            position: 'absolute',
-                            bottom: 16,
-                            left: 16,
-                            width: '500px'
-                        }}
-                    >
-                        <Fade
-                            in={alertVisibility.visible}
-                            timeout={{enter: 100, exit: 100}}
-                            addEndListener={() => {
-                                const timeout = setTimeout(() => {
-                                    setAlertVisibility({visible: false, type: ''})
-
-                                    return clearTimeout(timeout);
-                                }, 4000);
-                            }}
-                        >
-                            <Alert
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center'
-                                }}
-                                severity={alertVisibility.type}
-                                variant="standard"
-                            >
-                                <AlertTitle
-                                    sx={{
-                                        color: alertVisibility.type === 'success' ? '#2e7d32' : '#d32f2f',
-                                        lineHeight: '20px',
-                                        margin: 0,
-                                        padding: 0,
-                                    }}
-                                >
-                                    {
-                                        alertVisibility.type === 'success' ?
-                                            'Course added successfully' :
-                                            'Error adding course'
-                                    }
-                                </AlertTitle>
-                            </Alert>
-                        </Fade>
-                    </Box>
-                    <Box
                         p={5}
                         sx={{
                             position: 'absolute',
@@ -168,7 +124,7 @@ export default function AddCourse(props) {
                         <TextField
                             variant="filled"
                             margin="normal"
-                            label="Course name"
+                            label="Course ID"
                             type="text"
                             fullWidth
                             sx={{

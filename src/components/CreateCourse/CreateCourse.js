@@ -34,6 +34,8 @@ export default function CreateCourse(props) {
             fd.append('schedule[]', dayjs(item).toString());
         })
 
+        console.log('kuku', fd)
+
         axios.post(`${process.env.BACKEND_URL}/api/courses`, fd, {
             headers: {
                 Authorization: `Bearer ${session.data.user.accessToken}`

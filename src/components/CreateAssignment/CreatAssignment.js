@@ -11,8 +11,10 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import Grid from "@mui/material/Grid";
 import CloseIcon from '@mui/icons-material/Close';
+import axios from "axios";
+import {useSession} from "next-auth/react";
 
-export default function CreatAssignment() {
+export default function CreatAssignment(props) {
     const [openModal, setOpenModal] = React.useState('');
     const [openTopicModal, setOpenTopicModal] = React.useState(false);
     const [assignmentTitle, setAssignmentTitle] = React.useState('');
@@ -24,6 +26,8 @@ export default function CreatAssignment() {
     const [grade, setGrade] = React.useState('')
     const [anchorEl, setAnchorEl] = React.useState(null);
     const openMenu = Boolean(anchorEl);
+    const { courseId } = props;
+    const session = useSession();
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -59,6 +63,41 @@ export default function CreatAssignment() {
 
     const handleRemoveFile = (name) => {
         setFiles(prev => prev.filter((prevFile) => prevFile.name !== name));
+    }
+
+    const handleCreateAssignment = () => {
+        const fd = new FormData();
+
+        files.forEach(file => {
+            fd.append('attachments[]', file);
+        })
+
+        fd.append('title', assignmentTitle);
+
+        if(assignmentDescription) {
+            fd.append('description', assignmentDescription);
+        }
+
+        fd.append('dueDate', date);
+        fd.append('courseId', courseId);
+
+        axios.post(`${process.env.BACKEND_URL}/api/tasks`, fd, {
+            headers: {
+                Authorization: `Bearer ${session.data.user.accessToken}`
+            }
+        })
+        .then(function (response) {
+            // setAlertVisibility({visible: true, type: 'success', message: 'Assignment created successfully'});
+
+            console.log('kuku error', response);
+
+            handleClose();
+        })
+        .catch(function (error) {
+            console.log('kuku error', error);
+
+            // setAlertVisibility({visible: true, type: 'error', message: 'Error creating assignment'});
+        });
     }
 
     const darkGrey = '#373737';
@@ -361,7 +400,7 @@ export default function CreatAssignment() {
                         variant="contained"
                         size="large"
                         fullWidth
-                        onClick={handleCloseModal}
+                        onClick={handleCreateAssignment}
                         sx={{
                             color: 'white',
                             background: grey[900],

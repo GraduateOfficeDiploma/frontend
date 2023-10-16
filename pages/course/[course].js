@@ -45,7 +45,7 @@ export default function CoursePage() {
                     margin: '16px 0 40px'
                 }}
             >
-                <CreatAssignment />
+                <CreatAssignment courseId={router.query.course} />
             </Box>
 
 

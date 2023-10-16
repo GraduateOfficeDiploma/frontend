@@ -90,6 +90,7 @@ export default function Courses() {
                 ))}
                 <AddCourse
                     setCourses={setCourses}
+                    setAlertVisibility={setAlertVisibility}
                 />
                 <CreateCourse
                     alertVisibility={alertVisibility}
