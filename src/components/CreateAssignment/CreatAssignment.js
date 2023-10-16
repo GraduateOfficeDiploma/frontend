@@ -54,6 +54,8 @@ export default function CreatAssignment(props) {
     };
 
     const handleAddFiles = (file) => {
+        console.log('kuku', file)
+
         if(!files.find(item => item.name === file.name)) {
             setFiles([...files, file]);
         }
@@ -67,7 +69,7 @@ export default function CreatAssignment(props) {
         const fd = new FormData();
 
         files.forEach(file => {
-            fd.append('attachments[]', file);
+            fd.append('attachments', file);
         })
 
         fd.append('title', assignmentTitle);
@@ -87,9 +89,9 @@ export default function CreatAssignment(props) {
         .then(function (response) {
             // setAlertVisibility({visible: true, type: 'success', message: 'Assignment created successfully'});
 
-            console.log('kuku error', response);
+            console.log('kuku success', response);
 
-            handleClose();
+            handleCloseModal();
         })
         .catch(function (error) {
             console.log('kuku error', error);
@@ -264,10 +266,10 @@ export default function CreatAssignment(props) {
                             style={{
                                 width: '100%',
                             }}
-                            htmlFor="file-input"
+                            htmlFor="add-file-input"
                         >
                             <input
-                                id="file-input"
+                                id="add-file-input"
                                 type="file"
                                 name="image"
                                 multiple

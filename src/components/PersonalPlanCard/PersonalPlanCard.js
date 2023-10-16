@@ -193,10 +193,10 @@ export default function PersonalPlanCard() {
                                     style={{
                                         width: '100%',
                                     }}
-                                    htmlFor="file-input"
+                                    htmlFor="file-input-personal-plan"
                                 >
                                     <input
-                                        id="file-input"
+                                        id="file-input-personal-plan"
                                         type="file"
                                         name="image"
                                         multiple
@@ -273,6 +273,9 @@ export default function PersonalPlanCard() {
                 >
                     <Typography
                         variant="body1"
+                        sx={{
+                            fontWeight: 500
+                        }}
                     >
                         Private comments:
                     </Typography>

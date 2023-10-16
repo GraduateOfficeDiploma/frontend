@@ -300,10 +300,10 @@ export default function Course() {
                                     style={{
                                         width: '100%',
                                     }}
-                                    htmlFor="file-input"
+                                    htmlFor="add-file-input-course"
                                 >
                                     <input
-                                        id="file-input"
+                                        id="add-file-input-course"
                                         type="file"
                                         name="image"
                                         multiple

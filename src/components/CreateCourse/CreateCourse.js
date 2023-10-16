@@ -182,10 +182,10 @@ export default function CreateCourse(props) {
                                         maxWidth: '312px',
                                         width: '100%',
                                     }}
-                                    htmlFor="file-input"
+                                    htmlFor="image-file-input"
                                 >
                                     <input
-                                        id="file-input"
+                                        id="image-file-input"
                                         type="file"
                                         name="image"
                                         multiple
