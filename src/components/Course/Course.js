@@ -21,6 +21,8 @@ export default function Course() {
     const darkGrey = '#373737';
 
     const [message, setMessage] = React.useState('');
+    const [files, setFiles] = React.useState([]);
+    const [fileToSend, setFileToSend] = React.useState(null);
 
     return (
         <Accordion
@@ -277,31 +279,73 @@ export default function Course() {
                                 variant="body1"
                                 sx={{
                                     color: darkGrey,
-                                    fontWeight: 500
+                                    fontWeight: 500,
+                                    maxWidth: '200px',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden'
                                 }}
                             >
-                                mytopic.pdf
+                                { fileToSend?.name }
                             </Typography>
-                            <Button
-                                variant="contained"
-                                size="large"
-                                fullWidth
-                                sx={{
-                                    color: darkGrey,
-                                    background: 'transparent',
-                                    boxShadow: 'none',
-                                    border: `1px solid ${grey[400]}`,
-                                    textTransform: 'none',
-                                    borderRadius: '100px',
-                                    maxWidth: '312px',
-                                    '&.MuiButton-root:hover': {
-                                        bgcolor: grey[300],
-                                        boxShadow: 'none'
-                                    }
+                            <form
+                                style={{
+                                    width: '100%',
+                                    maxWidth: '312px'
                                 }}
+                                encType="multipart/form-data"
+                                action=""
                             >
-                                + Add file
-                            </Button>
+                                <label
+                                    style={{
+                                        width: '100%',
+                                    }}
+                                    htmlFor="file-input"
+                                >
+                                    <input
+                                        id="file-input"
+                                        type="file"
+                                        name="image"
+                                        multiple
+                                        style={{
+                                            display: 'none'
+                                        }}
+                                        onChange={(event) => {
+                                            setFileToSend(event.target.files[0]);
+                                        }}
+                                    />
+                                    <Box
+                                        variant="contained"
+                                        size="large"
+                                        fullWidth
+                                        htmlFor="file-input"
+                                        sx={{
+                                            color: darkGrey,
+                                            background: 'transparent',
+                                            boxShadow: 'none',
+                                            border: `1px solid ${grey[400]}`,
+                                            textTransform: 'none',
+                                            width: '100%',
+                                            padding: '10px 22px',
+                                            fontWeight: 500,
+                                            textAlign: 'center',
+                                            transition: 'background-color 100ms linear',
+                                            textOverflow: 'ellipsis',
+                                            overflow: 'hidden',
+                                            whiteSpace: 'nowrap',
+                                            borderRadius: '100px',
+                                            maxWidth: '312px',
+                                            '&:hover': {
+                                                backgroundColor: grey[300],
+                                                boxShadow: 'none',
+                                                cursor: 'pointer',
+                                            }
+                                        }}
+                                    >
+                                        + Add file
+                                    </Box>
+                                </label>
+                            </form>
                         </Box>
                         <Button
                             variant="contained"

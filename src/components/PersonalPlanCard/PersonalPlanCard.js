@@ -24,6 +24,35 @@ export default function PersonalPlanCard() {
     const darkGrey = '#373737';
 
     const [message, setMessage] = React.useState('');
+    const [messages, setMessages] = React.useState([
+        {
+            fullName: 'Name Surname',
+            role: 'Teacher',
+            message: 'I hope this message finds you well. I would like to discuss the crucial process of selecting' +
+                ' a dissertation topic and obtaining its approval. This stage marks the beginning of your dissertation' +
+                ' journey and is a critical foundation for your academic work.'
+        },
+        {
+            fullName: 'Name Surname',
+            role: 'Teacher',
+            message: 'Choosing the right topic is a crucial step in your academic journey,' +
+                ' and I\'m here to assist you in making an informed decision.'
+        }
+    ]);
+    const [fileToSend, setFileToSend] = React.useState(null);
+
+    const handleSendMessage = () => {
+        const newMessage = {
+            fullName: 'Name Surname',
+            role: 'Student',
+            message: message
+        }
+
+        setMessages(prev => ([...prev, newMessage]));
+        setMessage('');
+    }
+
+    console.log('kuku', message);
 
     return (
         <Accordion
@@ -143,31 +172,73 @@ export default function PersonalPlanCard() {
                                 variant="body1"
                                 sx={{
                                     color: darkGrey,
-                                    fontWeight: 500
+                                    fontWeight: 500,
+                                    maxWidth: '200px',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden'
                                 }}
                             >
-                                mytopic.pdf
+                                { fileToSend?.name }
                             </Typography>
-                            <Button
-                                variant="contained"
-                                size="large"
-                                fullWidth
-                                sx={{
-                                    color: darkGrey,
-                                    background: 'transparent',
-                                    boxShadow: 'none',
-                                    border: `1px solid ${grey[400]}`,
-                                    textTransform: 'none',
-                                    borderRadius: '100px',
-                                    maxWidth: '312px',
-                                    '&.MuiButton-root:hover': {
-                                        bgcolor: grey[300],
-                                        boxShadow: 'none'
-                                    }
+                            <form
+                                style={{
+                                    width: '100%',
+                                    maxWidth: '312px'
                                 }}
+                                encType="multipart/form-data"
+                                action=""
                             >
-                                + Add file
-                            </Button>
+                                <label
+                                    style={{
+                                        width: '100%',
+                                    }}
+                                    htmlFor="file-input"
+                                >
+                                    <input
+                                        id="file-input"
+                                        type="file"
+                                        name="image"
+                                        multiple
+                                        style={{
+                                            display: 'none'
+                                        }}
+                                        onChange={(event) => {
+                                            setFileToSend(event.target.files[0]);
+                                        }}
+                                    />
+                                    <Box
+                                        variant="contained"
+                                        size="large"
+                                        fullWidth
+                                        htmlFor="file-input"
+                                        sx={{
+                                            color: darkGrey,
+                                            background: 'transparent',
+                                            boxShadow: 'none',
+                                            border: `1px solid ${grey[400]}`,
+                                            textTransform: 'none',
+                                            width: '100%',
+                                            padding: '10px 22px',
+                                            fontWeight: 500,
+                                            textAlign: 'center',
+                                            transition: 'background-color 100ms linear',
+                                            textOverflow: 'ellipsis',
+                                            overflow: 'hidden',
+                                            whiteSpace: 'nowrap',
+                                            borderRadius: '100px',
+                                            maxWidth: '312px',
+                                            '&:hover': {
+                                                backgroundColor: grey[300],
+                                                boxShadow: 'none',
+                                                cursor: 'pointer',
+                                            }
+                                        }}
+                                    >
+                                        + Add file
+                                    </Box>
+                                </label>
+                            </form>
                         </Box>
                         <Button
                             variant="contained"
@@ -186,7 +257,7 @@ export default function PersonalPlanCard() {
                                 }
                             }}
                         >
-                            Resend
+                            Send
                         </Button>
                     </Box>
                 </Box>
@@ -205,134 +276,81 @@ export default function PersonalPlanCard() {
                     >
                         Private comments:
                     </Typography>
+
                     <Box
                         sx={{
                             display: 'flex',
                             flexDirection: 'column',
                             marginTop: 2,
-                            gap: 2
+                            gap: 2,
+                            maxHeight: '400px',
+                            overflow: 'auto',
+                            paddingRight: 2
                         }}
                     >
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                gap: '12px'
-                            }}
-                        >
-                            <Avatar
-                                sx={{
-                                    width: 32,
-                                    height: 32
-                                }}
-                            />
-                            <Box
-                                sx={{
-                                    width: '100%'
-                                }}
-                            >
+                        { messages.map(item => {
+                            return(
                                 <Box
                                     sx={{
                                         display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        width: '100%',
-                                        margin: '5px 0'
+                                        gap: '12px'
                                     }}
                                 >
-                                    <Typography
-                                        variant="body1"
+                                    <Avatar
                                         sx={{
-                                            fontSize: '17px',
-                                            fontWeight: 500,
-                                            lineHeight: '22px'
+                                            width: 32,
+                                            height: 32
+                                        }}
+                                    />
+                                    <Box
+                                        sx={{
+                                            width: '100%'
                                         }}
                                     >
-                                        Name Surname
-                                    </Typography>
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            lineHeight: '20px',
-                                            fontStyle: 'italic',
-                                            color: darkGrey
-                                        }}
-                                    >
-                                        Curator
-                                    </Typography>
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                                width: '100%',
+                                                margin: '5px 0'
+                                            }}
+                                        >
+                                            <Typography
+                                                variant="body1"
+                                                sx={{
+                                                    fontSize: '17px',
+                                                    fontWeight: 500,
+                                                    lineHeight: '22px'
+                                                }}
+                                            >
+                                                { item.fullName }
+                                            </Typography>
+                                            <Typography
+                                                variant="body2"
+                                                sx={{
+                                                    lineHeight: '20px',
+                                                    fontStyle: 'italic',
+                                                    color: darkGrey
+                                                }}
+                                            >
+                                                { item.role }
+                                            </Typography>
+                                        </Box>
+                                        <Typography
+                                            variant="body2"
+                                            sx={{
+                                                lineHeight: '20px',
+                                                marginTop: '4px',
+                                                color: textColor
+                                            }}
+                                        >
+                                            { item.message }
+                                        </Typography>
+                                    </Box>
                                 </Box>
-                                <Typography
-                                    variant="body2"
-                                    sx={{
-                                        lineHeight: '20px',
-                                        marginTop: '4px',
-                                        color: textColor
-                                    }}
-                                >
-                                    I hope this message finds you well. I would like to discuss the crucial process of selecting a dissertation topic and obtaining its approval.
-                                    This stage marks the beginning of your dissertation journey and is a critical foundation for your academic work.
-                                </Typography>
-                            </Box>
-                        </Box>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                gap: '12px'
-                            }}
-                        >
-                            <Avatar
-                                sx={{
-                                    width: 32,
-                                    height: 32
-                                }}
-                            />
-                            <Box
-                                sx={{
-                                    width: '100%'
-                                }}
-                            >
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        width: '100%',
-                                        margin: '5px 0'
-                                    }}
-                                >
-                                    <Typography
-                                        variant="body1"
-                                        sx={{
-                                            fontSize: '17px',
-                                            fontWeight: 500,
-                                            lineHeight: '22px'
-                                        }}
-                                    >
-                                        Name Surname
-                                    </Typography>
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            lineHeight: '20px',
-                                            fontStyle: 'italic',
-                                            color: darkGrey
-                                        }}
-                                    >
-                                        Curator
-                                    </Typography>
-                                </Box>
-                                <Typography
-                                    variant="body2"
-                                    sx={{
-                                        lineHeight: '20px',
-                                        marginTop: '4px',
-                                        color: textColor
-                                    }}
-                                >
-                                    Choosing the right topic is a crucial step in your academic journey,
-                                    and I'm here to assist you in making an informed decision.
-                                </Typography>
-                            </Box>
-                        </Box>
+                            );
+                        })}
                     </Box>
 
                     <TextField
@@ -346,24 +364,9 @@ export default function PersonalPlanCard() {
                             marginTop: 2
                         }}
                         InputProps={{
-                            startAdornment: <Button
-                                sx={{
-                                    padding: 0,
-                                    marginRight: 1,
-                                    minWidth: 0,
-                                    color: darkGrey,
-                                    '&.MuiButton-root:hover': {
-                                        bgcolor: 'transparent',
-                                    },
-                                    '&& .MuiTouchRipple-child': {
-                                        bgcolor: 'transparent'
-                                    }
-                                }}
-                            >
-                                <AttachFileIcon />
-                            </Button>,
                             endAdornment:
                                 <Button
+                                    onClick={handleSendMessage}
                                     sx={{
                                         padding: 0,
                                         marginLeft: 1,

@@ -20,10 +20,10 @@ export default function CreatAssignment(props) {
     const [assignmentTitle, setAssignmentTitle] = React.useState('');
     const [topic, setTopic] = React.useState('');
     const [assignmentDescription, setAssignmentDescription] = React.useState('');
-    const [date, setDate] = React.useState(dayjs('2023-01-01'));
+    const [date, setDate] = React.useState(dayjs());
     // const [permission, setPermission] = React.useState('all')
     const [files, setFiles] = React.useState([]);
-    const [grade, setGrade] = React.useState('')
+    const [selectedTopic, setSelectedTopic] = React.useState('assignments')
     const [anchorEl, setAnchorEl] = React.useState(null);
     const openMenu = Boolean(anchorEl);
     const { courseId } = props;
@@ -50,12 +50,10 @@ export default function CreatAssignment(props) {
     // };
 
     const handleChangeGrade = (event) => {
-        setGrade(event.target.value);
+        setSelectedTopic(event.target.value);
     };
 
     const handleAddFiles = (file) => {
-        console.log('kuku', !files.find(item => item.name === file.name));
-
         if(!files.find(item => item.name === file.name)) {
             setFiles([...files, file]);
         }
@@ -379,16 +377,16 @@ export default function CreatAssignment(props) {
 
                             <Grid item xs={6}>
                                 <FormControl sx={{width: '100%'}} variant="outlined">
-                                    <InputLabel id="select-grade-label">Grade</InputLabel>
+                                    <InputLabel id="select-grade-label">Topics</InputLabel>
                                     <Select
                                         labelId="select-grade-label"
                                         id="select-grade"
-                                        value={grade}
+                                        value={selectedTopic}
                                         onChange={handleChangeGrade}
-                                        label="Grade"
+                                        label="Topics"
                                     >
-                                        <MenuItem value="all">Ungraded</MenuItem>
-                                        <MenuItem value="students_view">Graded</MenuItem>
+                                        <MenuItem value="assignments">Assignments</MenuItem>
+                                        <MenuItem value="other">Other topic</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
