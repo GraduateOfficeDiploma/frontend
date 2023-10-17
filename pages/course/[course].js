@@ -17,7 +17,6 @@ import CreatAssignment from "../../src/components/CreateAssignment/CreatAssignme
 import IosShareIcon from '@mui/icons-material/IosShare';
 import {useEffect} from "react";
 import {useSession} from "next-auth/react";
-import FileSaver from "file-saver";
 import axios from "axios";
 
 export default function CoursePage() {
