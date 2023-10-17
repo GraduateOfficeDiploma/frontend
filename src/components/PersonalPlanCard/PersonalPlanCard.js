@@ -16,10 +16,15 @@ import Button from "@mui/material/Button";
 import StickyNote2OutlinedIcon from '@mui/icons-material/StickyNote2Outlined';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import SendIcon from '@mui/icons-material/Send';
+import {useSession} from "next-auth/react";
+import dayjs from "dayjs";
+import Link from "next/link";
+import {useEffect} from "react";
 
-export default function PersonalPlanCard() {
+export default function PersonalPlanCard({task, setProgress}) {
     const textColor = "#6E6E6E";
     const darkGrey = '#373737';
+    const session = useSession();
 
     const [message, setMessage] = React.useState('');
     const [messages, setMessages] = React.useState([
@@ -38,16 +43,34 @@ export default function PersonalPlanCard() {
         }
     ]);
     const [fileToSend, setFileToSend] = React.useState(null);
+    const [isTeacher, setIsTeacher] = React.useState(false);
+    const [isAccepted, setIsAccepted] = React.useState(false);
+
+    useEffect(() => {
+        if(session?.status === 'authenticated') {
+            setIsTeacher(session?.data?.user?.role === 'teacher');
+        }
+    }, [session]);
 
     const handleSendMessage = () => {
         const newMessage = {
-            fullName: 'Name Surname',
-            role: 'Student',
+            fullName: session.data.user.name,
+            role: session.data.user.role,
             message: message
         }
 
         setMessages(prev => ([...prev, newMessage]));
         setMessage('');
+    }
+
+    const handleAccept = () => {
+        setProgress(prev => prev + 10);
+        setIsAccepted(true);
+    }
+
+    const handleDecline = () => {
+        setProgress(prev => prev - 10);
+        setIsAccepted(false);
     }
 
     return (
@@ -83,7 +106,7 @@ export default function PersonalPlanCard() {
                     >
                         <StickyNote2OutlinedIcon/>
                         <Typography sx={{fontWeight: 400, lineHeight: '24px'}} variant="h6">
-                            Selection of the dissertation topic and its approval
+                            {task.title}
                         </Typography>
                     </Box>
                     <Typography variant="body1">
@@ -101,6 +124,145 @@ export default function PersonalPlanCard() {
                         marginBottom: 2
                     }}
                 />
+
+                { task.description &&
+                    <>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                borderRadius: 1,
+                            }}
+                        >
+                            <Typography m={0} sx={{fontWeight: 500}} variant="h6">
+                                Description
+                            </Typography>
+                            <Typography sx={{fontWeight: 400}} variant="body1">
+                                {task.description}
+                            </Typography>
+                        </Box>
+
+                        <Divider sx={{margin: '16px 0'}} />
+                    </>
+                }
+
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: '16px',
+                        marginBottom: 2
+                    }}
+                >
+                    <Link
+                        href="#"
+                        style={{
+                            display: "flex",
+                            textDecoration: 'none',
+                            width: '100%',
+                            border: `1px solid ${grey[400]}`,
+                            borderRadius: '8px'
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: '30%',
+                                minHeight: 86,
+                                bgcolor: grey[400],
+                                color: 'white',
+                                borderRadius: '4px 0 0 4px',
+                            }}
+                        >
+                            Download
+                        </Box>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'flex-start',
+                                width: '70%',
+                                padding: 2
+                            }}
+                        >
+                            <Typography
+                                variant="body1"
+                                sx={{
+                                    fontWeight: 500,
+                                    color: 'black'
+                                }}
+                            >
+                                Lesson 12. Case studies
+                            </Typography>
+                            <Typography
+                                variant="body1"
+                                sx={{
+                                    color: darkGrey
+                                }}
+                            >
+                                PDF
+                            </Typography>
+                        </Box>
+                    </Link>
+                    <Link
+                        href="#"
+                        style={{
+                            display: "flex",
+                            textDecoration: 'none',
+                            width: '100%',
+                            border: `1px solid ${grey[400]}`,
+                            borderRadius: '8px'
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: '30%',
+                                minHeight: 86,
+                                bgcolor: grey[400],
+                                color: 'white',
+                                borderRadius: '4px 0 0 4px',
+                            }}
+                        >
+                            Download
+                        </Box>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'flex-start',
+                                width: '70%',
+                                padding: 2
+                            }}
+                        >
+                            <Typography
+                                variant="body1"
+                                sx={{
+                                    fontWeight: 500,
+                                    color: 'black'
+                                }}
+                            >
+                                Lesson 12. Case studies
+                            </Typography>
+                            <Typography
+                                variant="body1"
+                                sx={{
+                                    color: darkGrey
+                                }}
+                            >
+                                PDF
+                            </Typography>
+                        </Box>
+                    </Link>
+                </Box>
+
                 <Box
                     sx={{
                         display: 'flex',
@@ -128,7 +290,7 @@ export default function PersonalPlanCard() {
                                     color: textColor
                                 }}
                             >
-                                Due date: 3rd month
+                                Due date: {dayjs(task?.dueDate).format('DD.MM.YYYY')}
                             </Typography>
                         </Box>
                         <Typography
@@ -386,6 +548,30 @@ export default function PersonalPlanCard() {
                     />
 
                 </Box>
+
+                { isTeacher &&
+                    <Button
+                        variant="contained"
+                        size="large"
+                        fullWidth
+                        onClick={isAccepted ? handleDecline : handleAccept}
+                        sx={{
+                            margin: '16px 0 0',
+                            color: 'white',
+                            background: isAccepted ? grey[700] : grey[900],
+                            boxShadow: 'none',
+                            textTransform: 'none',
+                            borderRadius: '100px',
+                            maxWidth: '400px',
+                            '&.MuiButton-root:hover': {
+                                bgcolor: isAccepted ? grey[600] : grey[800],
+                                boxShadow: 'none'
+                            }
+                        }}
+                    >
+                        { isAccepted ? 'Cancel' : 'Accept' }
+                    </Button>
+                }
             </AccordionDetails>
         </Accordion>
     );

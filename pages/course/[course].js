@@ -17,21 +17,82 @@ import CreatAssignment from "../../src/components/CreateAssignment/CreatAssignme
 import IosShareIcon from '@mui/icons-material/IosShare';
 import {useEffect} from "react";
 import {useSession} from "next-auth/react";
+import FileSaver from "file-saver";
+import axios from "axios";
 
 export default function CoursePage() {
     const router = useRouter();
     const [topics, setTopics] = React.useState('all');
     const [alertVisibility, setAlertVisibility] = React.useState(false);
+    const [course, setCourse] = React.useState(null);
     const [isTeacher, setIsTeacher] = React.useState(false);
     const [isLoaded, setIsLoaded] = React.useState(false);
+    const [tasks, setTasks] = React.useState([]);
     const session= useSession();
 
     useEffect(() => {
         if(session?.status === 'authenticated') {
             setIsTeacher(session?.data?.user?.role === 'teacher');
             setIsLoaded(true);
+
+            handleGetCourseById();
+
+            if(session?.data?.user?.role === 'student') {
+                handleGetStudentsTasks();
+            }
+
+            // FileSaver.saveAs("http://res.cloudinary.com/graduateofficediploma/raw/upload/v1697458393/skqrditd9y4miw8uujji", "file.pdf");
         }
     }, [session]);
+
+    const handleGetStudentsTasks = () => {
+        const tasksPayload = {
+            orderBy: {
+                dueDate: "ASC"
+            },
+            filter: {
+                course: {
+                    id: router.query.course
+                }
+            }
+        }
+
+        axios.get(`${process.env.BACKEND_URL}/api/tasks/`, {
+            headers: {
+                Authorization: `Bearer ${session.data.user.accessToken}`
+            },
+            data: {
+                ...tasksPayload
+            }
+        })
+        .then(function (response) {
+            console.log('kuku response', response)
+
+            setTasks([...response.data]);
+        })
+        .catch(function (error) {
+            console.log('kuku error', error);
+        });
+    }
+
+    const handleGetCourseById = () => {
+        const courseId = router.query.course;
+
+        axios.get(`${process.env.BACKEND_URL}/api/courses/${courseId}`, {
+            headers: {
+                Authorization: `Bearer ${session.data.user.accessToken}`
+            }
+        })
+        .then(function (response) {
+            console.log('kuku response', response);
+
+            setCourse({...response.data});
+            setIsLoaded(true);
+        })
+        .catch(function (error) {
+            console.log('kuku error', error);
+        });
+    }
 
     const handleChangeYear = (event) => {
         setTopics(event.target.value);
@@ -42,9 +103,11 @@ export default function CoursePage() {
         setAlertVisibility(true);
     }
 
-    if(!isLoaded) {
+    if(!isLoaded || !course || !tasks ) {
         return null;
     }
+
+    console.log('kuku tasks', tasks)
 
     return (
         <Box sx={{flexGrow: 1}} p={2}>
@@ -56,7 +119,7 @@ export default function CoursePage() {
                     marginBottom: 2
                 }}
             >
-                <Typography sx={{fontWeight: 500}} variant="h4">English language</Typography>
+                <Typography sx={{fontWeight: 500}} variant="h4">{course.name}</Typography>
                 <IconButton
                     onClick={handleCopyCourseId}
                 >
@@ -97,10 +160,16 @@ export default function CoursePage() {
                     >
                         <Typography sx={{fontWeight: 500, marginBottom: 2}} variant="h5">Students</Typography>
 
-                        <PersonCard navigateTo={`/course/${router.query.course}/user/1`} />
-                        <PersonCard navigateTo={`/course/${router.query.course}/user/2`} />
-                        <PersonCard navigateTo={`/course/${router.query.course}/user/3`} />
-                        <PersonCard navigateTo={`/course/${router.query.course}/user/4`} />
+                        { course && course.members.map(member => {
+                            if(member.user.role === "student") {
+                                return (
+                                    <PersonCard
+                                        name={member.user.fullName}
+                                        navigateTo={`/course/${router.query.course}/user/${member.user.id}`}
+                                    />
+                                );
+                            }
+                        })}
                     </Box>
                 </>
             }
@@ -120,8 +189,12 @@ export default function CoursePage() {
                             gap: 2
                         }}
                     >
-                        <Course />
-                        <Course />
+                        { tasks.map(task => {
+                            return(
+                                <Course isTeacher task={task} />
+                            );
+                        })}
+
                     </Box>
 
                 </Box>

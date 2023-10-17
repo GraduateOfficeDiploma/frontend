@@ -88,9 +88,15 @@ export default function Courses() {
             </Box>
             <Typography sx={{ fontWeight: 500, marginBottom: 3 }} variant="h4">My Courses</Typography>
             <Grid container spacing={2}>
-                { courses.map(course => (
-                    <CourseCard course={course} />
-                ))}
+                { courses.map(course => {
+                    console.log('kuku', course)
+
+                    if(course.name !== "Personal plan") {
+                        return(
+                            <CourseCard course={course}/>
+                        );
+                    }
+                })}
 
                 { isTeacher ? <CreateCourse
                     alertVisibility={alertVisibility}

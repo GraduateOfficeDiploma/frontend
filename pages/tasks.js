@@ -19,13 +19,22 @@ export default function Tasks() {
 
     useEffect(() => {
         if (session?.status === 'authenticated') {
-            axios.get(`${process.env.BACKEND_URL}/api/tasks`, {
+            const tasksPayload = {
+                orderBy: {
+                    dueDate: "ASC"
+                }
+            }
+
+            axios.get(`${process.env.BACKEND_URL}/api/tasks/`, {
                 headers: {
                     Authorization: `Bearer ${session.data.user.accessToken}`
+                },
+                params: {
+                    tasksPayload
                 }
             })
             .then(function (response) {
-                console.log('kuku response', response);
+                console.log('kuku response', response)
 
                 setTasks([...response.data]);
             })

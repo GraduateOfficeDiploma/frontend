@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import {Avatar} from "@mui/material";
 import Button from "@mui/material/Button";
 
-export default function PersonCard({navigateTo}) {
+export default function PersonCard({navigateTo, name}) {
     return (
         <Button
             href={navigateTo}
@@ -36,7 +36,7 @@ export default function PersonCard({navigateTo}) {
             />
             <Box>
                 <Typography sx={{ fontWeight: 500 }} variant="body1">
-                    Person name
+                    { name }
                 </Typography>
             </Box>
         </Button>

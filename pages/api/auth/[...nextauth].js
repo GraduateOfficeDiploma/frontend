@@ -59,9 +59,11 @@ export default NextAuth({
         },
 
         async session({ session, token }) {
+            console.log('kuku session token', token);
+
             session.user.accessToken = token.accessToken;
             session.user.fullName = token.fullName;
-            session.user.role = 'teacher';
+            session.user.role = token.role;
 
             return session;
         },

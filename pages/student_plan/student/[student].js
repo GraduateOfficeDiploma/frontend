@@ -13,10 +13,15 @@ import LinearProgress from '@mui/material/LinearProgress';
 import PersonalPlanCard from "../../../src/components/PersonalPlanCard/PersonalPlanCard";
 import AddStudent from "../../../src/components/AddStudent/AddStudent";
 import CreatAssignment from "../../../src/components/CreateAssignment/CreatAssignment";
+import {useEffect} from "react";
+import axios from "axios";
+import {useRouter} from "next/router";
+import {useSession} from "next-auth/react";
 
 function LinearProgressWithLabel(props) {
     const lightGrey = '#D9D9D9';
     const grey = '#8C8C8C';
+    const { value } = props;
 
     return (
         <Box sx={{ position: "relative", display: 'flex', alignItems: 'center', flexDirection: 'column', marginBottom: 6 }}>
@@ -42,7 +47,7 @@ function LinearProgressWithLabel(props) {
                             position: "absolute",
                             width: '5px',
                             height: '18px',
-                            bgcolor: grey,
+                            bgcolor: value > 0 ? grey : lightGrey,
                             top: '-5px'
                         }}
                     />
@@ -53,7 +58,7 @@ function LinearProgressWithLabel(props) {
                             position: "absolute",
                             width: '5px',
                             height: '18px',
-                            bgcolor: grey,
+                            bgcolor: value > 24 ? grey : lightGrey,
                             top: '-5px',
                             transform: 'translate(-50%)'
                         }}
@@ -65,7 +70,7 @@ function LinearProgressWithLabel(props) {
                             position: "absolute",
                             width: '5px',
                             height: '18px',
-                            bgcolor: lightGrey,
+                            bgcolor: value > 49 ? grey : lightGrey,
                             top: '-5px',
                             transform: 'translate(-50%)'
                         }}
@@ -77,7 +82,7 @@ function LinearProgressWithLabel(props) {
                             position: "absolute",
                             width: '5px',
                             height: '18px',
-                            bgcolor: lightGrey,
+                            bgcolor: value > 74 ? grey : lightGrey,
                             top: '-5px',
                             transform: 'translate(-50%)'
                         }}
@@ -89,7 +94,7 @@ function LinearProgressWithLabel(props) {
                             position: "absolute",
                             width: '5px',
                             height: '18px',
-                            bgcolor: lightGrey,
+                            bgcolor: value === 100 ? grey : lightGrey,
                             top: '-5px',
                             transform: 'translate(-100%)'
                         }}
@@ -115,7 +120,7 @@ function LinearProgressWithLabel(props) {
                             transform: 'translate(-3px)',
                         }}
                     >
-                        1st year
+                        2nd year
                     </Typography>
                 </Box>
                 <Box>
@@ -125,7 +130,7 @@ function LinearProgressWithLabel(props) {
                             transform: 'translate(-3px)',
                         }}
                     >
-                        1st year
+                        3rd year
                     </Typography>
                 </Box>
                 <Box>
@@ -135,7 +140,7 @@ function LinearProgressWithLabel(props) {
                             transform: 'translate(-3px)',
                         }}
                     >
-                        1st year
+                        4th year
                     </Typography>
                 </Box>
                 <Box>
@@ -155,11 +160,80 @@ function LinearProgressWithLabel(props) {
 
 export default function Student_plan() {
     const [year, setYear] = React.useState('all');
-    const [progress, setProgress] = React.useState(25);
+    const [progress, setProgress] = React.useState(0);
+    const [course, setCourse] = React.useState(null);
+    const [user, setUser] = React.useState(null);
+    const [tasks, setTasks] = React.useState([]);
+    const router = useRouter();
+    const session = useSession();
+
+    useEffect(() => {
+        if(session?.status === 'authenticated') {
+            const courseId = 'c82d5422-e2d5-4810-90c5-2406ccae213c';
+            const userId = router.query.student;
+
+            const tasksPayload = {
+                orderBy: {
+                    dueDate: "ASC"
+                },
+                filter: {
+                    course: {
+                        id: courseId
+                    }
+                }
+            }
+
+            axios.get(`${process.env.BACKEND_URL}/api/courses/${courseId}`, {
+                headers: {
+                    Authorization: `Bearer ${session.data.user.accessToken}`
+                }
+            })
+                .then(function (response) {
+                    setCourse({...response.data});
+                })
+                .catch(function (error) {
+                    console.log('kuku error', error);
+                });
+
+
+            axios.get(`${process.env.BACKEND_URL}/api/users/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${session.data.user.accessToken}`
+                }
+            })
+                .then(function (response) {
+                    setUser({...response.data});
+                })
+                .catch(function (error) {
+                    console.log('kuku error', error);
+                });
+
+            axios.get(`${process.env.BACKEND_URL}/api/tasks/`, {
+                headers: {
+                    Authorization: `Bearer ${session.data.user.accessToken}`
+                },
+                params: {
+                    ...tasksPayload
+                }
+            })
+                .then(function (response) {
+
+
+                    setTasks([...response.data]);
+                })
+                .catch(function (error) {
+                    console.log('kuku error', error);
+                });
+        }
+    }, [session]);
 
     const handleChangeYear = (event) => {
         setYear(event.target.value);
     };
+
+    if(!course || !user || !tasks) {
+        return null;
+    }
 
     return (
         <Box sx={{flexGrow: 1}} p={2}>
@@ -168,7 +242,7 @@ export default function Student_plan() {
                     marginBottom: 4
                 }}
             >
-                <Typography sx={{fontWeight: 500}} variant="h4">Students</Typography>
+                <Typography sx={{fontWeight: 500}} variant="h4">{user.fullName}</Typography>
 
                 <Box
                     sx={{
@@ -210,9 +284,11 @@ export default function Student_plan() {
                         gap: 2
                     }}
                 >
-                    <PersonalPlanCard />
-                    <PersonalPlanCard />
-                    <PersonalPlanCard />
+                    { tasks.map(task => {
+                        return (
+                            <PersonalPlanCard task={task} setProgress={setProgress} />
+                        );
+                    })}
                 </Box>
 
             </Box>

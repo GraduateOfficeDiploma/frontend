@@ -1,6 +1,6 @@
 'use client'
 import * as React from 'react';
-import {grey} from '@mui/material/colors';
+import {green, grey, red} from '@mui/material/colors';
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -15,8 +15,10 @@ import Link from "next/link";
 import StickyNote2OutlinedIcon from '@mui/icons-material/StickyNote2Outlined';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
+import dayjs from "dayjs";
+import {useSession} from "next-auth/react";
 
-export default function Course() {
+export default function Course({task, taskId, isTeacher}) {
     const textColor = "#6E6E6E";
     const darkGrey = '#373737';
 
@@ -59,8 +61,8 @@ export default function Course() {
                         }}
                     >
                         <StickyNote2OutlinedIcon/>
-                        <Typography sx={{fontWeight: 400, lineHeight: '24px'}} variant="h6">
-                            Title
+                        <Typography sx={{fontWeight: 500, lineHeight: '24px'}} variant="h6">
+                            {task?.title}
                         </Typography>
                     </Box>
                     <Typography variant="body1">
@@ -73,6 +75,33 @@ export default function Course() {
                     padding: '0 16px 16px'
                 }}
             >
+
+                <Divider
+                    sx={{
+                        marginBottom: 2
+                    }}
+                />
+
+                { task?.description &&
+                    <>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                borderRadius: 1
+                            }}
+                        >
+                            <Typography m={0} sx={{fontWeight: 500}} variant="h6">
+                                Description
+                            </Typography>
+                            <Typography sx={{fontWeight: 400}} variant="body1">
+                                {task?.description}
+                            </Typography>
+                        </Box>
+
+                        <Divider sx={{margin: '16px 0 16px'}} />
+                    </>
+                }
 
                 <Box
                     sx={{
@@ -199,75 +228,79 @@ export default function Course() {
                 <Box
                     sx={{
                         display: 'flex',
-                        justifyContent: 'space-between',
+                        justifyContent: isTeacher ? 'flex-end' : 'space-between',
                         gap: '8px'
                     }}
                 >
+                    { !isTeacher &&
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '8px'
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    gap: '4px'
+                                }}
+                            >
+                                <CalendarTodayIcon/>
+                                <Typography
+                                    variant="body1"
+                                    sx={{
+                                        color: textColor
+                                    }}
+                                >
+                                    Posted: Date
+                                </Typography>
+                            </Box>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    gap: '4px'
+                                }}
+                            >
+                                <CalendarTodayIcon/>
+                                <Typography
+                                    variant="body1"
+                                    sx={{
+                                        color: textColor
+                                    }}
+                                >
+                                    Due date: {dayjs(task?.dueDate).format('DD.MM.YYYY')}
+                                </Typography>
+                            </Box>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    gap: '4px'
+                                }}
+                            >
+                                <StarBorderIcon/>
+                                <Typography
+                                    variant="body1"
+                                    sx={{
+                                        color: textColor
+                                    }}
+                                >
+                                    Grade: Grade
+                                </Typography>
+                            </Box>
+                        </Box>
+                    }
+
                     <Box
                         sx={{
                             display: 'flex',
                             flexDirection: 'column',
-                            gap: '8px'
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                gap: '4px'
-                            }}
-                        >
-                            <CalendarTodayIcon/>
-                            <Typography
-                                variant="body1"
-                                sx={{
-                                    color: textColor
-                                }}
-                            >
-                                Posted: Date
-                            </Typography>
-                        </Box>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                gap: '4px'
-                            }}
-                        >
-                            <CalendarTodayIcon/>
-                            <Typography
-                                variant="body1"
-                                sx={{
-                                    color: textColor
-                                }}
-                            >
-                                Due date: Date
-                            </Typography>
-                        </Box>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                gap: '4px'
-                            }}
-                        >
-                            <StarBorderIcon/>
-                            <Typography
-                                variant="body1"
-                                sx={{
-                                    color: textColor
-                                }}
-                            >
-                                Grade: Grade
-                            </Typography>
-                        </Box>
-                    </Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            maxWidth: '520px',
+                            justifyContent: isTeacher ? 'flex-end' : 'flex-start',
+                            maxWidth: isTeacher ? 'none' : '520px',
                             width: '100%'
                         }}
                     >
-                        <Box
+                        { !isTeacher && <Box
                             sx={{
                                 display: 'flex',
                                 justifyContent: 'space-between',
@@ -286,7 +319,7 @@ export default function Course() {
                                     overflow: 'hidden'
                                 }}
                             >
-                                { fileToSend?.name }
+                                {fileToSend?.name}
                             </Typography>
                             <form
                                 style={{
@@ -346,26 +379,74 @@ export default function Course() {
                                     </Box>
                                 </label>
                             </form>
-                        </Box>
-                        <Button
-                            variant="contained"
-                            size="large"
-                            fullWidth
-                            sx={{
-                                margin: '16px 0 0',
-                                color: 'white',
-                                background: grey[900],
-                                boxShadow: 'none',
-                                textTransform: 'none',
-                                borderRadius: '100px',
-                                '&.MuiButton-root:hover': {
-                                    bgcolor: grey[800],
-                                    boxShadow: 'none'
-                                }
-                            }}
-                        >
-                            Send
-                        </Button>
+                        </Box>}
+
+                        { isTeacher ?
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    gap: 2
+                                }}
+                            >
+                                <Button
+                                    variant="contained"
+                                    size="large"
+                                    fullWidth
+                                    sx={{
+                                        color: 'white',
+                                        background: red[700],
+                                        boxShadow: 'none',
+                                        textTransform: 'none',
+                                        borderRadius: '100px',
+                                        '&.MuiButton-root:hover': {
+                                            bgcolor: red[600],
+                                            boxShadow: 'none'
+                                        }
+                                    }}
+                                >
+                                    Fail
+                                </Button>
+
+                                <Button
+                                    variant="contained"
+                                    size="large"
+                                    fullWidth
+                                    sx={{
+                                        color: 'white',
+                                        background: green[700],
+                                        boxShadow: 'none',
+                                        textTransform: 'none',
+                                        borderRadius: '100px',
+                                        '&.MuiButton-root:hover': {
+                                            bgcolor: green[600],
+                                            boxShadow: 'none'
+                                        }
+                                    }}
+                                >
+                                    Pass
+                                </Button>
+                            </Box>
+                            :
+                            <Button
+                                variant="contained"
+                                size="large"
+                                fullWidth
+                                sx={{
+                                    margin: '16px 0 0',
+                                    color: 'white',
+                                    background: grey[900],
+                                    boxShadow: 'none',
+                                    textTransform: 'none',
+                                    borderRadius: '100px',
+                                    '&.MuiButton-root:hover': {
+                                        bgcolor: grey[800],
+                                        boxShadow: 'none'
+                                    }
+                                }}
+                            >
+                                Send
+                            </Button>
+                        }
                     </Box>
                 </Box>
             </AccordionDetails>

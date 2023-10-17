@@ -16,6 +16,7 @@ export const config = {
         '/courses',
         '/tasks',
         '/personal_plan',
+        '/student_plan/:path*',
         '/course/:path*'
     ],
 }
