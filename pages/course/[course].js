@@ -73,18 +73,20 @@ export default function CoursePage() {
     const handleGetCourseById = () => {
         const courseId = router.query.course;
 
-        axios.get(`${process.env.BACKEND_URL}/api/courses/${courseId}`, {
-            headers: {
-                Authorization: `Bearer ${session.data.user.accessToken}`
-            }
-        })
-        .then(function (response) {
-            setCourse({...response.data});
-            setIsLoaded(true);
-        })
-        .catch(function (error) {
-            console.log('kuku error 2', error);
-        });
+        if(courseId) {
+            axios.get(`${process.env.BACKEND_URL}/api/courses/${courseId}`, {
+                headers: {
+                    Authorization: `Bearer ${session.data.user.accessToken}`
+                }
+            })
+                .then(function (response) {
+                    setCourse({...response.data});
+                    setIsLoaded(true);
+                })
+                .catch(function (error) {
+                    console.log('kuku error 2', error);
+                });
+        }
     }
 
     const handleChangeYear = (event) => {

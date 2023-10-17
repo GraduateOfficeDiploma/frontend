@@ -121,6 +121,12 @@ export default function Tasks() {
                                 );
                             }
                         })}
+
+                        { !toDoTasks.length &&
+                            <Grid item xs={12}>
+                                <Typography sx={{fontWeight: 500 }} variant="h6">No to do tasks</Typography>
+                            </Grid>
+                        }
                     </Grid>
                 </Grid>
                 <Grid item xs={4}>
@@ -135,6 +141,12 @@ export default function Tasks() {
                                 );
                             }
                         })}
+
+                        { !missingTasks.length &&
+                            <Grid item xs={12}>
+                                <Typography sx={{fontWeight: 500 }} variant="h6">No missing tasks</Typography>
+                            </Grid>
+                        }
                     </Grid>
                 </Grid>
                 <Grid item xs={4}>
@@ -149,6 +161,12 @@ export default function Tasks() {
                                 );
                             }
                         })}
+
+                        { !doneTasks.length &&
+                            <Grid item xs={12}>
+                                <Typography sx={{fontWeight: 500 }} variant="h6">No done tasks</Typography>
+                            </Grid>
+                        }
                     </Grid>
                 </Grid>
             </Grid>

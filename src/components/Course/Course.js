@@ -289,7 +289,7 @@ export default function Course({task, taskId, isTeacher, id, handleGetStudentsTa
                                         color: textColor
                                     }}
                                 >
-                                    Posted: Date
+                                    Posted: {dayjs().format('DD.MM.YYYY')}
                                 </Typography>
                             </Box>
                             <Box
@@ -321,7 +321,7 @@ export default function Course({task, taskId, isTeacher, id, handleGetStudentsTa
                                         color: textColor
                                     }}
                                 >
-                                    Grade: Grade
+                                    Grade: { task.submissions[0]?.grade ? (task.submissions[0]?.grade < 60 ? 'Failed' : task.submissions[0]?.grade) : 'Not graded'}
                                 </Typography>
                             </Box>
                         </Box>

@@ -329,7 +329,7 @@ export default function PersonalPlanCard({id, task, setProgress, getStudentTasks
                                     color: textColor
                                 }}
                             >
-                                Scientific supervisor: Approved
+                                Scientific supervisor: { task.submissions[0]?.grade ? (task.submissions[0]?.grade < 60 ? 'Reject' : 'Approved') : 'Reject'}
                             </Typography>
                             <Typography
                                 variant="body1"
@@ -337,7 +337,7 @@ export default function PersonalPlanCard({id, task, setProgress, getStudentTasks
                                     color: textColor
                                 }}
                             >
-                                Scientific secretary: Reject
+                                Scientific secretary: { task.submissions[0]?.grade ? (task.submissions[0]?.grade < 60 ? 'Reject' : 'Approved') : 'Reject'}
                             </Typography>
                         </Box>
                         <Box
