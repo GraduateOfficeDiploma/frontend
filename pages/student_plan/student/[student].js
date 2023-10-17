@@ -231,6 +231,16 @@ export default function Student_plan() {
             }
         })
             .then(function (response) {
+                let counter = 0;
+
+                response.data.forEach(task => {
+                    if(task.submissions[0]?.grade > 60) {
+                        counter += 1;
+                    }
+                })
+
+                setProgress(counter * 25 / response.data.length);
+
                 setTasks([...response.data.reverse()]);
             })
             .catch(function (error) {

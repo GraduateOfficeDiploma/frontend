@@ -417,7 +417,7 @@ export default function Course({task, taskId, isTeacher, id, handleGetStudentsTa
                             </form>
                         </Box>}
 
-                        { !task.submissions.length &&
+                        { (isTeacher && !task.submissions.length) &&
                             <Typography
                                 variant="body1"
                                 sx={{

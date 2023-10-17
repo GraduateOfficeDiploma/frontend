@@ -116,19 +116,20 @@ export default function Signup({ user }) {
                         flexDirection: 'column'
                     }}
                 >
-                    <FormControl fullWidth variant="filled" sx={{ margin: '24px 0 0' }}>
-                        <InputLabel id="demo-simple-select-standard-label">Person</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-standard-label"
-                            id="demo-simple-select-standard"
-                            value={role}
-                            onChange={handleChange}
-                            label="Person"
-                        >
-                            <MenuItem value="student">Student</MenuItem>
-                            <MenuItem value="teacher">Teacher</MenuItem>
-                        </Select>
-                    </FormControl>
+                    {/*<FormControl fullWidth variant="filled" sx={{ margin: '24px 0 0' }}>*/}
+                    {/*    <InputLabel id="demo-simple-select-standard-label">Person</InputLabel>*/}
+                    {/*    <Select*/}
+                    {/*        labelId="demo-simple-select-standard-label"*/}
+                    {/*        id="demo-simple-select-standard"*/}
+                    {/*        value={role}*/}
+                    {/*        onChange={handleChange}*/}
+                    {/*        label="Person"*/}
+                    {/*    >*/}
+                    {/*        <MenuItem value="student">Student</MenuItem>*/}
+                    {/*        <MenuItem value="teacher">Teacher</MenuItem>*/}
+                    {/*    </Select>*/}
+                    {/*</FormControl>*/}
+
                     <TextField
                         variant="filled"
                         margin="normal"

@@ -90,16 +90,6 @@ export default function PersonalPlanCard({id, task, setProgress, getStudentTasks
         setMessage('');
     }
 
-    const handleAccept = () => {
-        setProgress(prev => prev + 10);
-        setIsAccepted(true);
-    }
-
-    const handleDecline = () => {
-        setProgress(prev => prev - 10);
-        setIsAccepted(false);
-    }
-
     const handleSendSubmission = () => {
         const fd = new FormData();
         fd.append('attachments', fileToSend);
@@ -591,7 +581,24 @@ export default function PersonalPlanCard({id, task, setProgress, getStudentTasks
 
                 </Box>
 
-                { (isTeacher && task.submissions.length > 0) &&
+                { (isTeacher && !task.submissions?.length) &&
+                    <Typography
+                        variant="body1"
+                        sx={{
+                            color: darkGrey,
+                            fontWeight: 500,
+                            fontSize: 18,
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            marginTop: 2
+                        }}
+                    >
+                        Can not grade. No submissions yet
+                    </Typography>
+                }
+
+                { (isTeacher && task.submissions?.length > 0) &&
                     <Button
                         variant="contained"
                         size="large"
