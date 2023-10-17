@@ -163,24 +163,10 @@ export default function Personal_plan() {
     const [tasks, setTasks] = React.useState([]);
     const router = useRouter();
     const session = useSession();
+    const courseId = 'c82d5422-e2d5-4810-90c5-2406ccae213c';
 
     useEffect(() => {
         if(session?.status === 'authenticated') {
-            const courseId = 'c82d5422-e2d5-4810-90c5-2406ccae213c';
-
-            console.log('kuku', session);
-
-            const tasksPayload = {
-                orderBy: {
-                    dueDate: "ASC"
-                },
-                filter: {
-                    course: {
-                        id: courseId
-                    }
-                }
-            }
-
             axios.get(`${process.env.BACKEND_URL}/api/courses/${courseId}`, {
                 headers: {
                     Authorization: `Bearer ${session.data.user.accessToken}`
@@ -194,24 +180,39 @@ export default function Personal_plan() {
             });
 
 
-            axios.get(`${process.env.BACKEND_URL}/api/tasks/`, {
-                headers: {
-                    Authorization: `Bearer ${session.data.user.accessToken}`
-                },
-                params: {
-                    ...tasksPayload
-                }
-            })
-                .then(function (response) {
-
-
-                    setTasks([...response.data]);
-                })
-                .catch(function (error) {
-                    console.log('kuku error', error);
-                });
+            handleGetStudentTasks();
         }
     }, [session]);
+
+    const handleGetStudentTasks = () => {
+        const tasksPayload = {
+            orderBy: {
+                dueDate: "ASC"
+            },
+            filter: {
+                course: {
+                    id: courseId
+                }
+            }
+        }
+
+        axios.get(`${process.env.BACKEND_URL}/api/tasks/`, {
+            headers: {
+                Authorization: `Bearer ${session.data.user.accessToken}`
+            },
+            params: {
+                ...tasksPayload
+            }
+        })
+        .then(function (response) {
+
+
+            setTasks([...response.data.reverse()]);
+        })
+        .catch(function (error) {
+            console.log('kuku error', error);
+        });
+    }
 
     const handleChangeYear = (event) => {
         setYear(event.target.value);
@@ -256,19 +257,11 @@ export default function Personal_plan() {
                         gap: 2
                     }}
                 >
-                    { tasks.map(task => {
+                    { tasks.map((task, key) => {
                         return (
-                            <PersonalPlanCard task={task} setProgress={setProgress} />
+                            <PersonalPlanCard getStudentTasks={handleGetStudentTasks} id={key} task={task} setProgress={setProgress} />
                         );
                     })}
-
-                    <PersonalPlanCard
-                        task={{
-                            title: 'Test title',
-                            description: 'Test description',
-                            date: ''
-                        }}
-                    />
                 </Box>
 
             </Box>

@@ -5,8 +5,9 @@ import Box from "@mui/material/Box";
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import SchoolIcon from '@mui/icons-material/School';
+import dayjs from "dayjs";
 
-export default function TaskCard() {
+export default function TaskCard({task}) {
     const textColor = "#6E6E6E";
 
     return (
@@ -18,8 +19,7 @@ export default function TaskCard() {
                 borderRadius: '8px'
             }}
         >
-            <Typography sx={{ontWeight: 500, marginBottom: 2}} variant="h6">Homework
-                words</Typography>
+            <Typography sx={{ontWeight: 500, marginBottom: 2}} variant="h6">{task.title}</Typography>
             <Box
                 sx={{
                     display: 'flex',
@@ -42,25 +42,25 @@ export default function TaskCard() {
                         <SchoolIcon/>
                         <Typography sx={{color: textColor}} variant="body1">Course:</Typography>
                     </Box>
-                    <Typography variant="body1">Course name</Typography>
+                    <Typography variant="body1">{task.course.name}</Typography>
                 </Box>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between'
-                    }}
-                >
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            gap: '4px'
-                        }}
-                    >
-                        <CalendarTodayIcon/>
-                        <Typography sx={{color: textColor}} variant="body1">Posted:</Typography>
-                    </Box>
-                    <Typography variant="body1">Day, Month day, Year</Typography>
-                </Box>
+                {/*<Box*/}
+                {/*    sx={{*/}
+                {/*        display: 'flex',*/}
+                {/*        justifyContent: 'space-between'*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/*    <Box*/}
+                {/*        sx={{*/}
+                {/*            display: 'flex',*/}
+                {/*            gap: '4px'*/}
+                {/*        }}*/}
+                {/*    >*/}
+                {/*        <CalendarTodayIcon/>*/}
+                {/*        <Typography sx={{color: textColor}} variant="body1">Posted:</Typography>*/}
+                {/*    </Box>*/}
+                {/*    <Typography variant="body1">Day, Month day, Year</Typography>*/}
+                {/*</Box>*/}
                 <Box
                     sx={{
                         display: 'flex',
@@ -76,7 +76,7 @@ export default function TaskCard() {
                         <CalendarTodayIcon/>
                         <Typography sx={{color: textColor}} variant="body1">Due date:</Typography>
                     </Box>
-                    <Typography variant="body1">Day, Month day, Year</Typography>
+                    <Typography variant="body1">{dayjs(task.dueDate).format('DD.MM.YYYY')}</Typography>
                 </Box>
             </Box>
         </Box>

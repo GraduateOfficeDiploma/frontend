@@ -8,9 +8,11 @@ import TaskCard from "../src/components/TaskCard/TaskCard";
 import {useEffect} from "react";
 import axios from "axios";
 import {useSession} from "next-auth/react";
+import dayjs from "dayjs";
 
 export default function Tasks() {
     const [course, setCourse] = React.useState('all');
+    const [courses, setCourses] = React.useState([]);
     const [tasks, setTasks] = React.useState([]);
     const [toDoTasks, setToDoTasks] = React.useState([]);
     const [missingTasks, setMissingTasks] = React.useState([]);
@@ -34,8 +36,40 @@ export default function Tasks() {
                 }
             })
             .then(function (response) {
-                console.log('kuku response', response)
+                const doneT = [];
+                const toDoT = [];
+                const missT = [];
+                const currentCourses = [];
 
+                response.data.forEach(task => {
+                    if(task.submissions[0]?.grade) {
+                        if (!doneT.find(item => item.id === task.id)) {
+                            doneT.push(task)
+                        }
+                    }
+
+                    if(dayjs() > dayjs(task.dueDate)) {
+                        if (!missT.find(item => item.id === task.id)) {
+                            missT.push(task)
+                        }
+                    } else {
+                        if (!toDoT.find(item => item.id === task.id)) {
+                            toDoT.push(task)
+                        }
+                    }
+
+                    if (!currentCourses.find(item => item.id === task.course.id)) {
+                        currentCourses.push({
+                            id: task.course.id,
+                            name: task.course.name
+                        });
+                    }
+                })
+
+                setToDoTasks([...toDoT]);
+                setMissingTasks([...missT]);
+                setDoneTasks([...doneT]);
+                setCourses([...currentCourses]);
                 setTasks([...response.data]);
             })
             .catch(function (error) {
@@ -47,6 +81,10 @@ export default function Tasks() {
     const handleChangeCourse = (event) => {
         setCourse(event.target.value);
     };
+
+    if(!tasks) {
+        return null;
+    }
 
     return (
         <Box sx={{flexGrow: 1}} p={2}>
@@ -62,8 +100,11 @@ export default function Tasks() {
                     label="Person"
                 >
                     <MenuItem value="all">All courses</MenuItem>
-                    <MenuItem value="english">English</MenuItem>
-                    <MenuItem value="math">Math</MenuItem>
+                    { courses.map(course => {
+                        return(
+                            <MenuItem value={course.id}>{course.name}</MenuItem>
+                        );
+                    })}
                 </Select>
             </FormControl>
 
@@ -71,46 +112,43 @@ export default function Tasks() {
                 <Grid item xs={4}>
                     <Typography sx={{fontWeight: 500, marginBottom: 2}} variant="h5">To do</Typography>
                     <Grid container spacing={1}>
-                        <Grid item xs={12}>
-                            <TaskCard/>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TaskCard/>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TaskCard/>
-                        </Grid>
+                        { toDoTasks.map(task => {
+                            if(course === 'all' || course === task.course.id) {
+                                return(
+                                    <Grid item xs={12}>
+                                        <TaskCard task={task} />
+                                    </Grid>
+                                );
+                            }
+                        })}
                     </Grid>
                 </Grid>
                 <Grid item xs={4}>
                     <Typography sx={{fontWeight: 500, marginBottom: 2}} variant="h5">Missing</Typography>
                     <Grid container spacing={1}>
-                        <Grid item xs={12}>
-                            <TaskCard/>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TaskCard/>
-                        </Grid>
+                        { missingTasks.map(task => {
+                            if(course === 'all' || course === task.course.id) {
+                                return(
+                                    <Grid item xs={12}>
+                                        <TaskCard task={task} />
+                                    </Grid>
+                                );
+                            }
+                        })}
                     </Grid>
                 </Grid>
                 <Grid item xs={4}>
                     <Typography sx={{fontWeight: 500, marginBottom: 2}} variant="h5">Done</Typography>
                     <Grid container spacing={1}>
-                        <Grid item xs={12}>
-                            <TaskCard/>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TaskCard/>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TaskCard/>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TaskCard/>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TaskCard/>
-                        </Grid>
+                        { doneTasks.map(task => {
+                            if(course === 'all' || course === task.course.id) {
+                                return(
+                                    <Grid item xs={12}>
+                                        <TaskCard task={task} />
+                                    </Grid>
+                                );
+                            }
+                        })}
                     </Grid>
                 </Grid>
             </Grid>

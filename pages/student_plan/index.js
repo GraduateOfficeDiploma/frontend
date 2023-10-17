@@ -48,8 +48,6 @@ export default function StudentsPlansPage() {
         return null;
     }
 
-    console.log('kuku', course)
-
     return (
         <Box sx={{flexGrow: 1}} p={2}>
             <Box

@@ -12,24 +12,16 @@ export default function UserCoursePage() {
     const [course, setCourse] = React.useState(null);
     const [user, setUser] = React.useState(null);
     const [tasks, setTasks] = React.useState([]);
+    const [isTeacher, setIsTeacher] = React.useState(false);
     const router = useRouter();
     const session = useSession();
 
     useEffect(() => {
         if(session?.status === 'authenticated') {
+            setIsTeacher(session?.data?.user?.role === 'teacher');
+
             const courseId = router.query.course;
             const userId = router.query.user;
-
-            const tasksPayload = {
-                orderBy: {
-                    dueDate: "ASC"
-                },
-                filter: {
-                    course: {
-                        id: router.query.course
-                    }
-                }
-            }
 
             axios.get(`${process.env.BACKEND_URL}/api/courses/${courseId}`, {
                 headers: {
@@ -43,7 +35,6 @@ export default function UserCoursePage() {
                 console.log('kuku error', error);
             });
 
-
             axios.get(`${process.env.BACKEND_URL}/api/users/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${session.data.user.accessToken}`
@@ -56,14 +47,36 @@ export default function UserCoursePage() {
                 console.log('kuku error', error);
             });
 
-            axios.get(`${process.env.BACKEND_URL}/api/tasks/`, {
-                headers: {
-                    Authorization: `Bearer ${session.data.user.accessToken}`
-                },
-                params: {
-                    ...tasksPayload
+            handleGetTasks();
+        }
+    }, [session]);
+
+    const handleGetTasks = () => {
+        const courseId = router.query.course;
+        const userId = router.query.user;
+
+        const tasksPayload = {
+            orderBy: {
+                dueDate: "ASC"
+            },
+            filter: {
+                course: {
+                    id: courseId,
+                    members: {
+                        user: userId,
+                    },
                 }
-            })
+            }
+        }
+
+        axios.get(`${process.env.BACKEND_URL}/api/tasks/`, {
+            headers: {
+                Authorization: `Bearer ${session.data.user.accessToken}`
+            },
+            params: {
+                ...tasksPayload
+            }
+        })
             .then(function (response) {
 
 
@@ -72,8 +85,7 @@ export default function UserCoursePage() {
             .catch(function (error) {
                 console.log('kuku error', error);
             });
-        }
-    }, [session]);
+    }
 
     if(!course || !user || !tasks) {
         return null;
@@ -106,7 +118,7 @@ export default function UserCoursePage() {
                         gap: 2
                     }}
                 >
-                    { tasks.map(task => <Course task={task} isTeacher />)}
+                    { tasks.map(task => <Course handleGetStudentsTasks={handleGetTasks} isTeacher task={task} />)}
                 </Box>
             </Box>
         </Box>

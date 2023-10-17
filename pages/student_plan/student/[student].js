@@ -166,22 +166,11 @@ export default function Student_plan() {
     const [tasks, setTasks] = React.useState([]);
     const router = useRouter();
     const session = useSession();
+    const courseId = 'c82d5422-e2d5-4810-90c5-2406ccae213c';
 
     useEffect(() => {
         if(session?.status === 'authenticated') {
-            const courseId = 'c82d5422-e2d5-4810-90c5-2406ccae213c';
             const userId = router.query.student;
-
-            const tasksPayload = {
-                orderBy: {
-                    dueDate: "ASC"
-                },
-                filter: {
-                    course: {
-                        id: courseId
-                    }
-                }
-            }
 
             axios.get(`${process.env.BACKEND_URL}/api/courses/${courseId}`, {
                 headers: {
@@ -208,28 +197,46 @@ export default function Student_plan() {
                     console.log('kuku error', error);
                 });
 
-            axios.get(`${process.env.BACKEND_URL}/api/tasks/`, {
-                headers: {
-                    Authorization: `Bearer ${session.data.user.accessToken}`
-                },
-                params: {
-                    ...tasksPayload
-                }
-            })
-                .then(function (response) {
-
-
-                    setTasks([...response.data]);
-                })
-                .catch(function (error) {
-                    console.log('kuku error', error);
-                });
+            handleGetTasks();
         }
     }, [session]);
 
     const handleChangeYear = (event) => {
         setYear(event.target.value);
     };
+
+    const handleGetTasks = () => {
+        const userId = router.query.student;
+
+        const tasksPayload = {
+            orderBy: {
+                dueDate: "ASC"
+            },
+            filter: {
+                course: {
+                    id: courseId,
+                    members: {
+                        user: userId,
+                    },
+                }
+            }
+        }
+
+        axios.get(`${process.env.BACKEND_URL}/api/tasks/`, {
+            headers: {
+                Authorization: `Bearer ${session.data.user.accessToken}`
+            },
+            params: {
+                ...tasksPayload
+            }
+        })
+            .then(function (response) {
+                setTasks([...response.data.reverse()]);
+            })
+            .catch(function (error) {
+                console.log('kuku error', error);
+            });
+    }
 
     if(!course || !user || !tasks) {
         return null;
@@ -249,7 +256,7 @@ export default function Student_plan() {
                         marginTop: 2
                     }}
                 >
-                    <CreatAssignment isStudentsPersonalPlan />
+                    <CreatAssignment courseId={courseId} isStudentsPersonalPlan />
                 </Box>
             </Box>
 
@@ -284,9 +291,9 @@ export default function Student_plan() {
                         gap: 2
                     }}
                 >
-                    { tasks.map(task => {
+                    { tasks.map((task, key) => {
                         return (
-                            <PersonalPlanCard task={task} setProgress={setProgress} />
+                            <PersonalPlanCard getStudentTasks={handleGetTasks} id={key} task={task} setProgress={setProgress} />
                         );
                     })}
                 </Box>

@@ -59,8 +59,6 @@ export default function CreatAssignment(props) {
     }
 
     const handleAddFiles = (file) => {
-        console.log('kuku', file)
-
         if (!files.find(item => item.name === file.name)) {
             setFiles([...files, file]);
         }
@@ -91,18 +89,16 @@ export default function CreatAssignment(props) {
                 Authorization: `Bearer ${session.data.user.accessToken}`
             }
         })
-            .then(function (response) {
-                // setAlertVisibility({visible: true, type: 'success', message: 'Assignment created successfully'});
+        .then(function (response) {
+            // setAlertVisibility({visible: true, type: 'success', message: 'Assignment created successfully'});
 
-                console.log('kuku success', response);
+            handleCloseModal();
+        })
+        .catch(function (error) {
+            console.log('kuku error', error);
 
-                handleCloseModal();
-            })
-            .catch(function (error) {
-                console.log('kuku error', error);
-
-                // setAlertVisibility({visible: true, type: 'error', message: 'Error creating assignment'});
-            });
+            // setAlertVisibility({visible: true, type: 'error', message: 'Error creating assignment'});
+        });
     }
 
     const darkGrey = '#373737';
@@ -186,7 +182,7 @@ export default function CreatAssignment(props) {
                     <TextField
                         variant="filled"
                         margin="normal"
-                        label="Instructions (optional)"
+                        label="Instructions"
                         type="text"
                         multiline
                         rows={5}

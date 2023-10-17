@@ -17,7 +17,6 @@ import CreatAssignment from "../../src/components/CreateAssignment/CreatAssignme
 import IosShareIcon from '@mui/icons-material/IosShare';
 import {useEffect} from "react";
 import {useSession} from "next-auth/react";
-import FileSaver from "file-saver";
 import axios from "axios";
 
 export default function CoursePage() {
@@ -40,8 +39,6 @@ export default function CoursePage() {
             if(session?.data?.user?.role === 'student') {
                 handleGetStudentsTasks();
             }
-
-            // FileSaver.saveAs("http://res.cloudinary.com/graduateofficediploma/raw/upload/v1697458393/skqrditd9y4miw8uujji", "file.pdf");
         }
     }, [session]);
 
@@ -61,17 +58,15 @@ export default function CoursePage() {
             headers: {
                 Authorization: `Bearer ${session.data.user.accessToken}`
             },
-            data: {
+            params: {
                 ...tasksPayload
             }
         })
         .then(function (response) {
-            console.log('kuku response', response)
-
             setTasks([...response.data]);
         })
         .catch(function (error) {
-            console.log('kuku error', error);
+            console.log('kuku error 1', error);
         });
     }
 
@@ -84,13 +79,11 @@ export default function CoursePage() {
             }
         })
         .then(function (response) {
-            console.log('kuku response', response);
-
             setCourse({...response.data});
             setIsLoaded(true);
         })
         .catch(function (error) {
-            console.log('kuku error', error);
+            console.log('kuku error 2', error);
         });
     }
 
@@ -106,8 +99,6 @@ export default function CoursePage() {
     if(!isLoaded || !course || !tasks ) {
         return null;
     }
-
-    console.log('kuku tasks', tasks)
 
     return (
         <Box sx={{flexGrow: 1}} p={2}>
@@ -189,9 +180,9 @@ export default function CoursePage() {
                             gap: 2
                         }}
                     >
-                        { tasks.map(task => {
+                        { tasks.map((task, key) => {
                             return(
-                                <Course isTeacher task={task} />
+                                <Course handleGetStudentsTasks={handleGetStudentsTasks} id={key} isTeacher={isTeacher} task={task} />
                             );
                         })}
 
