@@ -1,6 +1,3 @@
-# Set the memory limit for Node.js
-ARG NODE_OPTIONS=--max_old_space_size=4096
-
 # Use an official Node.js runtime as the base image
 FROM node:18
 
