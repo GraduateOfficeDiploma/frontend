@@ -5,7 +5,7 @@ ARG NODE_OPTIONS=--max_old_space_size=4096
 FROM node:18
 
 # Set the working directory in the container
-WORKDIR /src
+WORKDIR ./
 
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
