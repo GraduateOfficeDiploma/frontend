@@ -28,6 +28,9 @@ COPY --from=build ./public ./public
 COPY --from=build ./package.json ./
 COPY --from=build ./package-lock.json ./
 
+# Install production dependencies
+RUN npm install --production
+
 # Expose the port the app runs on (adjust if needed)
 EXPOSE $PORT
 
