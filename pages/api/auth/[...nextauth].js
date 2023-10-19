@@ -66,4 +66,5 @@ export default NextAuth({
             return session;
         },
     },
+    site: process.env.BACKEND_URL,
 })
