@@ -2,7 +2,7 @@
 FROM node:18 AS build
 
 # Set the working directory in the container
-WORKDIR /src
+WORKDIR /app
 
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
@@ -20,13 +20,13 @@ RUN npm run build
 FROM node:18-slim
 
 # Set the working directory in the container
-WORKDIR /src
+WORKDIR /app
 
 # Copy the built application from the 'build' stage
-COPY --from=build ./.next ./.next
-COPY --from=build ./public ./public
-COPY --from=build ./package.json ./
-COPY --from=build ./package-lock.json ./
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
+COPY --from=build /app/package.json ./
+COPY --from=build /app/package-lock.json ./
 
 # Install production dependencies
 RUN npm install --production
