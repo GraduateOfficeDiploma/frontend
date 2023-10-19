@@ -30,7 +30,7 @@ jobs:
       - name: Deploy to Heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          HEROKU_BACKEND_APP_NAME: ${{ secrets.HEROKU_FRONTEND_APP_NAME }}
+          HEROKU_FRONTEND_APP_NAME: ${{ secrets.HEROKU_FRONTEND_APP_NAME }}
         run: |
           # Install Heroku CLI (if not already installed)
           if ! command -v heroku &> /dev/null; then
