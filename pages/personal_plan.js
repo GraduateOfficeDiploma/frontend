@@ -163,7 +163,7 @@ export default function Personal_plan() {
     const [tasks, setTasks] = React.useState([]);
     const router = useRouter();
     const session = useSession();
-    const courseId = 'c82d5422-e2d5-4810-90c5-2406ccae213c';
+    const courseId = '50dc3f3a-ced8-4f83-98ef-966e579358c9'; // hardcoded created course
 
     useEffect(() => {
         if(session?.status === 'authenticated') {
